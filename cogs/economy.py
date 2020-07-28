@@ -22,11 +22,16 @@ JOBS = [
 	{"name": "Businessman", "id": 5, "lvl_required": 200, "robux_payment": (100000, 200000), "message": "You earned {} robux by selling cars. :moneybag:"}
 ]
 
+async def more_inventory_space(ctx, inventory):
+	inventory.append(-1)
+	return False
+
 SHOP_ITEMS = [
 	{"name": "Bloxy-Cola", "id": 0, "price": 50, "description": "Fresh Bloxy cola!"},
 	{"name": "Gaming PC", "id": 1, "price": 20000, "description": "\"i gonna play fortnite\""},
 	{"name": "PS5", "id": 2, "price": 80000, "description": "PlayStation 5!"},
-	{"name": "Ban Hammer", "id": 3, "price": 1000000, "description": "The powerful ban hammer!"}
+	{"name": "Ban Hammer", "id": 3, "price": 1000000, "description": "The powerful ban hammer!"},
+	{"name": "More inventory space", "id": 4, "price": 20000, "description": "Adds 1 more space into your inventory.", "callback"}
 ]
 
 SHOP_ITEMS_PER_PAGE = 9
@@ -526,11 +531,16 @@ class Economy(commands.Cog):
 
 		self.remove_robux(ctx.author.id, price)
 
-		for i in range(amount):
-			for j in range(len(inventory)):
-				if inventory[j] == -1:
-					inventory[j] = item["id"]
-					break
+		add_item = True
+		if "callback" in item:
+			add_item = await item["callback"](ctx, inventory)
+
+		if add_item:
+			for i in range(amount):
+				for j in range(len(inventory)):
+					if inventory[j] == -1:
+						inventory[j] = item["id"]
+						break
 
 		cursor.execute("UPDATE users SET inventory = ? WHERE user_id = ?", (json.dumps(inventory), ctx.author.id,))
 		db.commit()
