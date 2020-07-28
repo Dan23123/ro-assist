@@ -674,7 +674,7 @@ class Economy(commands.Cog):
 		if answer == "n":
 			return await ctx.send(f"{ctx.author.mention}, {target.mention} declined your gift. :x:")
 		elif answer != "y":
-			return
+			return CURRENTLY_TRADING_USERS.remove(ctx.author.id)
 
 		for i in range(amount):
 			for j in range(len(user_inventory)):
@@ -693,6 +693,7 @@ class Economy(commands.Cog):
 		embed_success.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
 		await ctx.send(embed = embed_success)
+		CURRENTLY_TRADING_USERS.remove(ctx.author.id)
 
 def setup(bot):
 	bot.add_cog(Economy(bot))
