@@ -33,6 +33,8 @@ SHOP_ITEMS_PER_PAGE = 9
 JOB_PER_PAGE = 9
 INVENTORY_ITEMS_PER_PAGE = 9
 
+CURRENTLY_TRADING_USERS = []
+
 def get_job_by_name(job_name):
 	global JOBS
 	for job in JOBS:
@@ -633,6 +635,12 @@ class Economy(commands.Cog):
 		if target == ctx.author or target.bot:
 			return
 
+		if ctx.author.id in CURRENTLY_TRADING_USERS:
+			embed_failure = discord.Embed(title = "Give Item", description = f"You currently sent trade to someone else. Wait when they accept trade or trade expires. :x:", colour = discord.Colour.red())
+			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			return await ctx.send(embed = embed_failure)
+
 		item = get_item_by_name(item_name)
 
 		if item == None:
@@ -656,6 +664,8 @@ class Economy(commands.Cog):
 			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
 			return await ctx.send(embed = embed_failure)
+
+		CURRENTLY_TRADING_USERS.append(ctx.author.id)
 
 		await ctx.send(f"{target.mention}, {ctx.author.mention} wants to give you {item_name} (Amount: {amount}). Would you like to accept? (y/n)\n(30 seconds to accept)")
 		message = await self.bot.wait_for("message", timeout = 30.0, check = lambda message: message.author == target and message.channel == ctx.channel)
