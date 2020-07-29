@@ -129,7 +129,7 @@ class Info(commands.Cog):
 	@commands.has_permissions(manage_messages = True)
 	async def set_prefix(self, ctx, prefix):
 		if len(prefix) == 1:
-			cursor.execute("UPDATE guilds SET prefix = ? WHERE guild_id = ?", (prefix, ctx.guild.id))
+			cursor.execute("UPDATE guilds SET prefix = ? WHERE guild_id = ?", (prefix, ctx.guild.id,))
 			db.commit()
 
 			await ctx.send(embed = discord.Embed(title = "Set Prefix", description = f"My new prefix for this server is \"{prefix}\". :white_check_mark:", colour = discord.Colour.green()))

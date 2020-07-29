@@ -682,7 +682,8 @@ class Economy(commands.Cog):
 		answer = message.content.lower()
 
 		if answer == "n":
-			return await ctx.send(f"{ctx.author.mention}, {target.mention} declined your gift. :x:")
+			await ctx.send(f"{ctx.author.mention}, {target.mention} declined your gift. :x:")
+			return CURRENTLY_TRADING_USERS.remove(ctx.author.id)
 		elif answer != "y":
 			return CURRENTLY_TRADING_USERS.remove(ctx.author.id)
 
