@@ -3,3 +3,4 @@ aiohttp
 google-api-python-client
 bs4
 psutil
+psycopg2

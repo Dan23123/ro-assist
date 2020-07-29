@@ -1,6 +1,7 @@
-import sqlite3
+import psycopg2
+from config import DATABASE_URL
 
-db = sqlite3.connect("database.db")
+db = psycopg2.connect(DATABASE_URL, sslmode = "require")
 cursor = db.cursor()
 
 cursor.executescript("""
