@@ -17,7 +17,7 @@ class Info(commands.Cog):
 		self.bot.remove_command("help")
 		self.richpresence.start()
 
-	@tasks.loop(seconds = 2.0)
+	@tasks.loop(seconds = 10.0)
 	async def richpresence(self):
 		activity = ""
 		choice = randint(0, 2)
