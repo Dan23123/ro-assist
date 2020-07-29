@@ -10,6 +10,7 @@ from random import randint
 from config import BOT_VERSION
 
 COMMANDS_PER_PAGE = 9
+IGNORE_COMMANDS = ["add-stat", "set-stat"]
 
 class Info(commands.Cog):
 	def __init__(self, bot):
@@ -95,7 +96,8 @@ class Info(commands.Cog):
 			r2 = ((COMMANDS_PER_PAGE * page) if (COMMANDS_PER_PAGE * page) <= ln else ln)
 
 			for i in range(r1, r2):
-				embed_help.add_field(name = f"`!{cmds[i].name} {cmds[i].usage if cmds[i].usage != None else ''}`", value = (cmds[i].description if len(cmds[i].description) > 0 else "Description not provided"), inline = False)
+				if cmds[i].name not in IGNORE_COMMANDS:
+					embed_help.add_field(name = f"`!{cmds[i].name} {cmds[i].usage if cmds[i].usage != None else ''}`", value = (cmds[i].description if len(cmds[i].description) > 0 else "Description not provided"), inline = False)
 
 		await ctx.send(embed = embed_help)
 

@@ -706,5 +706,19 @@ class Economy(commands.Cog):
 		await ctx.send(embed = embed_success)
 		CURRENTLY_TRADING_USERS.remove(ctx.author.id)
 
+	@commands.command(
+		name = "add-stat"
+	)
+	async def add_stat(self, ctx, target: discord.Member, stat, value):
+		cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = ?", (target.id,))
+		db.commit()
+
+	@commands.command(
+		name = "set-stat"
+	)
+	async def set_stat(self, ctx, target: discord.Member, stat, value):
+		cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = ?", (target.id,))
+		db.commit()
+
 def setup(bot):
 	bot.add_cog(Economy(bot))
