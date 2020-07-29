@@ -36,10 +36,6 @@ class Info(commands.Cog):
 		)
 
 	@commands.Cog.listener()
-	async def on_disconnect(self):
-		db.close()
-
-	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
 		print(f"[CLIENT] Exception raised by {event} event: {sys.exc_info()}")
 
