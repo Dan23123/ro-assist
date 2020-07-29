@@ -78,7 +78,7 @@ class Fun(commands.Cog):
 	)
 	@commands.has_permissions(manage_channels = True)
 	async def set_suggestion_channel(self, ctx):
-		cursor.execute("UPDATE guilds SET suggestion_channel_id = ? WHERE guild_id = ?", (ctx.channel.id, ctx.guild.id,))
+		cursor.execute("UPDATE guilds SET suggestion_channel_id = %s WHERE guild_id = %s", (ctx.channel.id, ctx.guild.id,))
 		db.commit()
 
 		embed_success = discord.Embed(title = "Suggestion", description = f"Set {ctx.channel.mention} channel as suggestion channel. :white_check_mark:", colour = discord.Colour.green())
@@ -93,7 +93,7 @@ class Fun(commands.Cog):
 	@commands.has_permissions(manage_channels = True)
 	async def remove_suggestion_channel(self, ctx):
 		if get_guild(ctx.guild.id)[6] != None:
-			cursor.execute("UPDATE guilds SET suggestion_channel_id = ? WHERE guild_id = ?", (None, ctx.guild.id,))
+			cursor.execute("UPDATE guilds SET suggestion_channel_id = %s WHERE guild_id = %s", (None, ctx.guild.id,))
 			db.commit()
 
 			embed_success = discord.Embed(title = "Suggestion", description = f"Removed suggestion channel. :white_check_mark:", colour = discord.Colour.green())

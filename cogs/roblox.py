@@ -16,7 +16,7 @@ class Roblox(commands.Cog):
 	async def on_guild_channel_delete(self, channel):
 		guild = get_guild(channel.guild.id)
 		if channel.id == guild[2]:
-			cursor.execute("UPDATE guilds SET verification_channel_id = ?, verification_role_id = ?, verification_set_username = ? WHERE guild_id = ?", (None, None, None, channel.guild.id))
+			cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (None, None, None, channel.guild.id))
 			db.commit()
 
 	@commands.command(
@@ -82,7 +82,7 @@ class Roblox(commands.Cog):
 		else:
 			return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid answer. :x:", colour = discord.Colour.red()))
 
-		cursor.execute("UPDATE guilds SET verification_channel_id = ?, verification_role_id = ?, verification_set_username = ? WHERE guild_id = ?", (ctx.channel.id, verification_role, verification_set_username, ctx.guild.id,))
+		cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (ctx.channel.id, verification_role, verification_set_username, ctx.guild.id,))
 		db.commit()
 
 		await ctx.send(embed = discord.Embed(title = "Verification Setup", description = f"Set up verification for {ctx.channel.mention} channel. :white_check_mark:", colour = discord.Colour.green()))
@@ -138,7 +138,7 @@ class Roblox(commands.Cog):
 						if role != None:
 							await ctx.author.add_roles(role)
 						else:
-							cursor.execute("UPDATE guilds SET verification_role_id = ? WHERE guild_id = ?", (None, ctx.guild.id))
+							cursor.execute("UPDATE guilds SET verification_role_id = %s WHERE guild_id = %s", (None, ctx.guild.id))
 							db.commit()
 
 					if guild[4] == 1:
@@ -147,7 +147,7 @@ class Roblox(commands.Cog):
 						except:
 							pass
 
-					cursor.execute("UPDATE users SET roblox_id = ? WHERE user_id = ?", (user["Id"], ctx.author.id))
+					cursor.execute("UPDATE users SET roblox_id = %s WHERE user_id = %s", (user["Id"], ctx.author.id))
 					db.commit()
 
 					embed_success = discord.Embed(title = "Verification", description = "Verification completed. :white_check_mark:", colour = discord.Colour.green())

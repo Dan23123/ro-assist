@@ -4,7 +4,7 @@ from config import DATABASE_URL
 db = psycopg2.connect(DATABASE_URL, sslmode = "require")
 cursor = db.cursor()
 
-cursor.executescript("""
+cursor.execute("""
 	CREATE TABLE IF NOT EXISTS guilds (
 		guild_id BIGINT PRIMARY KEY,
 		prefix VARCHAR(1) DEFAULT '!',
@@ -38,11 +38,11 @@ cursor.executescript("""
 """)
 
 def add_guild(guild_id):
-	cursor.execute("INSERT INTO guilds (guild_id) VALUES (?)", (guild_id,))
+	cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s)", (guild_id,))
 	db.commit()
 
 def get_guild(guild_id):
-	cursor.execute("SELECT * FROM guilds WHERE guild_id = ?", (guild_id,))
+	cursor.execute("SELECT * FROM guilds WHERE guild_id = %s", (guild_id,))
 	result = cursor.fetchone()
 
 	if result == None:
@@ -52,11 +52,11 @@ def get_guild(guild_id):
 	return result
 
 def add_user(user_id):
-	cursor.execute("INSERT INTO users (user_id) VALUES (?)", (user_id,))
+	cursor.execute("INSERT INTO users (user_id) VALUES (%s)", (user_id,))
 	db.commit()
 
 def get_user(user_id):
-	cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+	cursor.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
 	result = cursor.fetchone()
 
 	if result == None:
@@ -74,11 +74,11 @@ def get_top10_users(order_by, limit):
 	return cursor.fetchall()
 
 def add_giveaway(guild_id, channel_id, message_id, reward, winners, requirements, ends_at):
-	cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (?, ?, ?, ?, ?, ?, ?)", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
+	cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (%s, %s, %s, %s, %s, %s, %s)", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
 	db.commit()
 
 def get_giveaway(guild_id, channel_id, message_id):
-	cursor.execute("SELECT * FROM giveaways WHERE guild_id = ? AND channel_id = ? AND message_id = ?", (guild_id, channel_id, message_id,))
+	cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (guild_id, channel_id, message_id,))
 	return cursor.fetchone()
 
 def get_all_giveaways():
@@ -86,9 +86,9 @@ def get_all_giveaways():
 	return cursor.fetchall()
 
 def get_guild_giveaways(guild_id):
-	cursor.execute("SELECT * FROM giveaways WHERE guild_id = ?", (guild_id,))
+	cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s", (guild_id,))
 	return cursor.fetchall()
 
 def delete_giveaway(guild_id, channel_id, message_id):
-	cursor.execute("DELETE FROM giveaways WHERE guild_id = ? AND channel_id = ? AND message_id = ?", (guild_id, channel_id, message_id,))
+	cursor.execute("DELETE FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (guild_id, channel_id, message_id,))
 	db.commit()

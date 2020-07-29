@@ -80,7 +80,7 @@ class Economy(commands.Cog):
 					exp_left -= (level * XP_RATE)
 					level += 1
 
-			cursor.execute(f"UPDATE users SET exp = 0, level = level + {level_to_add} WHERE user_id = ?", (message.author.id,))
+			cursor.execute(f"UPDATE users SET exp = 0, level = level + {level_to_add} WHERE user_id = %s", (message.author.id,))
 			db.commit()
 
 			embed = discord.Embed(title = "Level Up", description = f"You just leveled up, congratulations! Your level is now {level}.", colour = discord.Colour.green())
@@ -89,16 +89,16 @@ class Economy(commands.Cog):
 			await message.channel.send(embed = embed)
 
 	async def give_exp(self, user_id, exp, message):
-		cursor.execute(f"UPDATE users SET exp = exp + {exp} WHERE user_id = ?", (user_id,))
+		cursor.execute(f"UPDATE users SET exp = exp + {exp} WHERE user_id = %s", (user_id,))
 		db.commit()
 		await self.check_exp(get_user(user_id), message)
 
 	def give_robux(self, user_id, robux):
-		cursor.execute(f"UPDATE users SET robux = robux + {robux} WHERE user_id = ?", (user_id,))
+		cursor.execute(f"UPDATE users SET robux = robux + {robux} WHERE user_id = %s", (user_id,))
 		db.commit()
 
 	def remove_robux(self, user_id, robux):
-		cursor.execute(f"UPDATE users SET robux = robux - {robux} WHERE user_id = ?", (user_id,))
+		cursor.execute(f"UPDATE users SET robux = robux - {robux} WHERE user_id = %s", (user_id,))
 		db.commit()
 
 	@commands.Cog.listener()
@@ -440,7 +440,7 @@ class Economy(commands.Cog):
 
 			return await ctx.send(embed = embed_failure)
 
-		cursor.execute("UPDATE users SET job_id = ? WHERE user_id = ?", (job["id"], ctx.author.id,))
+		cursor.execute("UPDATE users SET job_id = %s WHERE user_id = %s", (job["id"], ctx.author.id,))
 		db.commit()
 
 		embed_success = discord.Embed(title = "Job", description = f"You are working as {job['name']} now. :white_check_mark:", colour = discord.Colour.green())
@@ -542,7 +542,7 @@ class Economy(commands.Cog):
 						inventory[j] = item["id"]
 						break
 
-		cursor.execute("UPDATE users SET inventory = ? WHERE user_id = ?", (json.dumps(inventory), ctx.author.id,))
+		cursor.execute("UPDATE users SET inventory = %s WHERE user_id = %s", (json.dumps(inventory), ctx.author.id,))
 		db.commit()
 
 		embed_success = discord.Embed(title = "Purchase Item", description = f"You bought {item['name']} (Amount: {amount}) for {price} robux. :white_check_mark:", colour = discord.Colour.green())
@@ -582,7 +582,7 @@ class Economy(commands.Cog):
 
 		self.give_robux(ctx.author.id, robux)
 
-		cursor.execute("UPDATE users SET inventory = ? WHERE user_id = ?", (json.dumps(inventory), ctx.author.id,))
+		cursor.execute("UPDATE users SET inventory = %s WHERE user_id = %s", (json.dumps(inventory), ctx.author.id,))
 		db.commit()
 
 		embed_success = discord.Embed(title = "Purchase Item", description = f"You sold {item['name']} (Amount: {amount}) for {robux} robux. :white_check_mark:", colour = discord.Colour.green())
@@ -697,7 +697,7 @@ class Economy(commands.Cog):
 							break
 					break
 
-		cursor.executemany("UPDATE users SET inventory = ? WHERE user_id = ?", [(json.dumps(user_inventory), ctx.author.id,), (json.dumps(target_inventory), target.id,)])
+		cursor.executemany("UPDATE users SET inventory = %s WHERE user_id = %s", [(json.dumps(user_inventory), ctx.author.id,), (json.dumps(target_inventory), target.id,)])
 		db.commit()
 
 		embed_success = discord.Embed(title = "Give Item", description = f"You gave {item['name']} (Amount: {amount}) to {target.mention}. :white_check_mark:", colour = discord.Colour.green())
@@ -711,7 +711,7 @@ class Economy(commands.Cog):
 	)
 	@commands.is_owner()
 	async def add_stat(self, ctx, target: discord.Member, stat, value):
-		cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = ?", (target.id,))
+		cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = %s", (target.id,))
 		db.commit()
 
 	@commands.command(
@@ -719,7 +719,7 @@ class Economy(commands.Cog):
 	)
 	@commands.is_owner()
 	async def set_stat(self, ctx, target: discord.Member, stat, value):
-		cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = ?", (target.id,))
+		cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = %s", (target.id,))
 		db.commit()
 
 def setup(bot):
