@@ -710,6 +710,9 @@ class Economy(commands.Cog):
 		name = "add-stat"
 	)
 	async def add_stat(self, ctx, target: discord.Member, stat, value):
+		if ctx.author != self.bot.owner:
+			return
+		
 		cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = ?", (target.id,))
 		db.commit()
 
@@ -717,6 +720,9 @@ class Economy(commands.Cog):
 		name = "set-stat"
 	)
 	async def set_stat(self, ctx, target: discord.Member, stat, value):
+		if ctx.author != self.bot.owner:
+			return
+
 		cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = ?", (target.id,))
 		db.commit()
 
