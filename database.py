@@ -33,7 +33,7 @@ cursor.execute("""
 		winners SMALLINT NOT NULL,
 		requirements TEXT DEFAULT '' NOT NULL,
 		ends_at BIGINT NOT NULL,
-		ended BOOLEAN DEFAULT 0 NOT NULL
+		ended BOOLEAN DEFAULT false NOT NULL
 	);
 """)
 
