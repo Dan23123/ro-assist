@@ -709,20 +709,16 @@ class Economy(commands.Cog):
 	@commands.command(
 		name = "add-stat"
 	)
+	@commands.is_owner()
 	async def add_stat(self, ctx, target: discord.Member, stat, value):
-		if ctx.author != self.bot.owner:
-			return
-		
 		cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = ?", (target.id,))
 		db.commit()
 
 	@commands.command(
 		name = "set-stat"
 	)
+	@commands.is_owner()
 	async def set_stat(self, ctx, target: discord.Member, stat, value):
-		if ctx.author != self.bot.owner:
-			return
-
 		cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = ?", (target.id,))
 		db.commit()
 
