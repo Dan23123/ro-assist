@@ -124,7 +124,7 @@ class Roblox(commands.Cog):
 			async with aiohttp.ClientSession() as session:
 				async with session.get(f"https://www.roblox.com/users/{user['Id']}/profile") as r:
 					text = await r.text()
-					soup = BeautifulSoup(text, "lxml")
+					soup = BeautifulSoup(text)
 					status_object = soup.find("span", class_="profile-about-content-text linkify")
 
 					if status_object == None or status_object.text != status:
