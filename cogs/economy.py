@@ -31,7 +31,7 @@ SHOP_ITEMS = [
 	{"name": "Gaming PC", "id": 1, "price": 20000, "description": "\"i gonna play fortnite\""},
 	{"name": "PS5", "id": 2, "price": 80000, "description": "PlayStation 5!"},
 	{"name": "Ban Hammer", "id": 3, "price": 1000000, "description": "The powerful ban hammer!"},
-	{"name": "More inventory space", "id": 4, "price": 20000, "description": "Adds 1 more space into your inventory.", "callback": more_inventory_space}
+	{"name": "More inventory space", "id": 4, "price": 1000000, "description": "Adds 1 more space into your inventory.", "callback": more_inventory_space}
 ]
 
 SHOP_ITEMS_PER_PAGE = 9
