@@ -205,7 +205,7 @@ class Economy(commands.Cog):
 	@commands.command(
 		description = "Earn robux by completing the quiz (20-60 robux reward)"
 	)
-	@commands.cooldown(1, 1200, commands.BucketType.user)
+	@commands.cooldown(1, 600, commands.BucketType.user)
 	async def quiz(self, ctx):
 		embed = discord.Embed(title = "Quiz", description = """
 		Choose difficulty:
@@ -295,7 +295,7 @@ class Economy(commands.Cog):
 		name = "guess-the-number",
 		description = "Guess the number game (20-100 robux reward)"
 	)
-	@commands.cooldown(1, 1200, commands.BucketType.user)
+	@commands.cooldown(1, 300, commands.BucketType.user)
 	async def guess_the_number(self, ctx):
 		embed = discord.Embed(title = "Guess The Number", description = """
 		Choose difficulty:
