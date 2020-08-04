@@ -83,10 +83,12 @@ class Economy(commands.Cog):
 			cursor.execute(f"UPDATE users SET exp = 0, level = level + {level_to_add} WHERE user_id = %s", (message.author.id,))
 			db.commit()
 
+			"""
 			embed = discord.Embed(title = "Level Up", description = f"You just leveled up, congratulations! Your level is now {level}.", colour = discord.Colour.green())
 			embed.set_author(name = message.author, icon_url = str(message.author.avatar_url))
 
 			await message.channel.send(embed = embed)
+			"""
 
 	async def give_exp(self, user_id, exp, message):
 		cursor.execute(f"UPDATE users SET exp = exp + {exp} WHERE user_id = %s", (user_id,))
