@@ -1,7 +1,7 @@
 import psycopg2
 from config import DATABASE_URL
 
-db = psycopg2.connect(DATABASE_URL, sslmode = "require")
+db = psycopg2.connect(DATABASE_URL)
 cursor = db.cursor()
 
 cursor.execute("""
@@ -38,57 +38,101 @@ cursor.execute("""
 """)
 
 def add_guild(guild_id):
-	cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s);", (guild_id,))
-	db.commit()
+	try:
+		cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s);", (guild_id,))
+		db.commit()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_guild(guild_id):
-	cursor.execute("SELECT * FROM guilds WHERE guild_id = %s;", (guild_id,))
-	result = cursor.fetchone()
+	try:
+		cursor.execute("SELECT * FROM guilds WHERE guild_id = %s;", (guild_id,))
+		result = cursor.fetchone()
 
-	if result == None:
-		add_guild(guild_id)
-		result = get_guild(guild_id)
+		if result == None:
+			add_guild(guild_id)
+			result = get_guild(guild_id)
 
-	return result
+		return result
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def add_user(user_id):
-	cursor.execute("INSERT INTO users (user_id) VALUES (%s);", (user_id,))
-	db.commit()
+	try:
+		cursor.execute("INSERT INTO users (user_id) VALUES (%s);", (user_id,))
+		db.commit()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_user(user_id):
-	cursor.execute("SELECT * FROM users WHERE user_id = %s;", (user_id,))
-	result = cursor.fetchone()
+	try:
+		cursor.execute("SELECT * FROM users WHERE user_id = %s;", (user_id,))
+		result = cursor.fetchone()
 
-	if result == None:
-		add_user(user_id)
-		result = get_user(user_id)
+		if result == None:
+			add_user(user_id)
+			result = get_user(user_id)
 
-	return result
+		return result
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_all_users():
-	cursor.execute("SELECT * FROM users;")
-	return cursor.fetchall()
+	try:
+		cursor.execute("SELECT * FROM users;")
+		return cursor.fetchall()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_top10_users(order_by, limit):
-	cursor.execute(f"SELECT * FROM users ORDER BY {order_by} DESC LIMIT 10;")
-	return cursor.fetchall()
+	try:
+		cursor.execute(f"SELECT * FROM users ORDER BY {order_by} DESC LIMIT 10;")
+		return cursor.fetchall()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def add_giveaway(guild_id, channel_id, message_id, reward, winners, requirements, ends_at):
-	cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (%s, %s, %s, %s, %s, %s, %s);", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
-	db.commit()
+	try:
+		cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (%s, %s, %s, %s, %s, %s, %s);", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
+		db.commit()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_giveaway(guild_id, channel_id, message_id):
-	cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s;", (guild_id, channel_id, message_id,))
-	return cursor.fetchone()
+	try:
+		cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s;", (guild_id, channel_id, message_id,))
+		return cursor.fetchone()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_all_giveaways():
-	cursor.execute("SELECT * FROM giveaways;")
-	return cursor.fetchall()
+	try:
+		cursor.execute("SELECT * FROM giveaways;")
+		return cursor.fetchall()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def get_guild_giveaways(guild_id):
-	cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s;", (guild_id,))
-	return cursor.fetchall()
+	try:
+		cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s;", (guild_id,))
+		return cursor.fetchall()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
 
 def delete_giveaway(guild_id, channel_id, message_id):
-	cursor.execute("DELETE FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (guild_id, channel_id, message_id,))
-	db.commit()
+	try:
+		cursor.execute("DELETE FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (guild_id, channel_id, message_id,))
+		db.commit()
+	except psycopg2.InFailedSqlTransaction:
+		cursor.execute("ROLLBACK;")
+		db.commit()
