@@ -363,7 +363,7 @@ class Giveaways(commands.Cog):
 					embed_giveaway.description += f"\n\nWinners:\n{mentions}"
 					await message.edit(embed = embed_giveaway)
 
-					cursor.execute("UPDATE giveaways SET ended = 1 WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (giveaway[0], giveaway[1], giveaway[2],))
+					cursor.execute("UPDATE giveaways SET ended = true WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (giveaway[0], giveaway[1], giveaway[2],))
 				db.commit()
 			except (discord.NotFound, discord.Forbidden):
 				delete_giveaway(giveaway[0], giveaway[1], giveaway[2])
