@@ -342,7 +342,7 @@ class Giveaways(commands.Cog):
 
 				if giveaway[7] == 0 and time.time() >= giveaway[6]:
 					if reaction == None or reaction.count == 1:
-						cursor.execute("UPDATE giveaways SET ended = 1 WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (giveaway[0], giveaway[1], giveaway[2],))
+						cursor.execute("UPDATE giveaways SET ended = true WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (giveaway[0], giveaway[1], giveaway[2],))
 						db.commit()
 						await channel.send(f"I couldn't determinate the winner (Reaction not found or nobody reacted).\n{message.jump_url}")
 						continue
