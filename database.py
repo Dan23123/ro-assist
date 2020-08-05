@@ -2,6 +2,7 @@ import psycopg2
 from config import DATABASE_URL
 
 db = psycopg2.connect(DATABASE_URL)
+db.autocommit = True
 cursor = db.cursor()
 
 cursor.execute("""
@@ -40,7 +41,7 @@ db.commit()
 
 def add_guild(guild_id):
 	cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s);", (guild_id,))
-	db.commit()
+	# db.commit()
 
 def get_guild(guild_id):
 	cursor.execute("SELECT * FROM guilds WHERE guild_id = %s;", (guild_id,))
@@ -54,7 +55,7 @@ def get_guild(guild_id):
 
 def add_user(user_id):
 	cursor.execute("INSERT INTO users (user_id) VALUES (%s);", (user_id,))
-	db.commit()
+	# db.commit()
 
 def get_user(user_id):
 	cursor.execute("SELECT * FROM users WHERE user_id = %s;", (user_id,))
@@ -76,7 +77,7 @@ def get_top10_users(order_by, limit):
 
 def add_giveaway(guild_id, channel_id, message_id, reward, winners, requirements, ends_at):
 	cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (%s, %s, %s, %s, %s, %s, %s);", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
-	db.commit()
+	# db.commit()
 
 def get_giveaway(guild_id, channel_id, message_id):
 	cursor.execute("SELECT * FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s;", (guild_id, channel_id, message_id,))
@@ -92,4 +93,4 @@ def get_guild_giveaways(guild_id):
 
 def delete_giveaway(guild_id, channel_id, message_id):
 	cursor.execute("DELETE FROM giveaways WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (guild_id, channel_id, message_id,))
-	db.commit()
+	# db.commit()
