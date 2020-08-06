@@ -19,7 +19,7 @@ class Fun(commands.Cog):
 	)
 	async def howcool(self, ctx, member: discord.Member):
 		progress = randint(0, 100)
-		await ctx.send(embed = discord.Embed(title = "How Cool", description = f"{member.mention} is {progress}% cool.", colour = discord.Colour.green()))
+		await ctx.send(embed = discord.Embed(title = "How Cool", description = f"{member.mention} is {progress}% cool.", colour = discord.Colour.from_hsv(progress / 255, 1, 1)))
 
 	@commands.command(
 		description = "Sends random meme from reddit"
