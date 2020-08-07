@@ -1,4 +1,5 @@
 import discord
+import aiohttp
 import os
 import psutil
 import sys
@@ -7,7 +8,7 @@ from discord.ext import commands, tasks
 from database import db, cursor, get_guild
 from math import ceil
 from random import randint
-from config import BOT_VERSION
+from config import BOT_VERSION, DISCORD_BOTS_TOKEN
 
 COMMANDS_PER_PAGE = 9
 IGNORE_COMMANDS = ["add-stat", "set-stat"]
@@ -17,6 +18,7 @@ class Info(commands.Cog):
 		self.bot = bot
 		self.bot.remove_command("help")
 		self.richpresence.start()
+		self.discordbotspoststats.start()
 
 	@tasks.loop(seconds = 10.0)
 	async def richpresence(self):
@@ -34,6 +36,12 @@ class Info(commands.Cog):
 			activity = discord.Activity(name = activity, type = discord.ActivityType.watching),
 			status = discord.Status.dnd
 		)
+
+	@tasks.loop(seconds = 10.0)
+	async def discordbotspoststats(self):
+		async with aiohttp.ClientSession() as session:
+			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN, "Content-Type": "application/json"}) as r:
+				pass
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
