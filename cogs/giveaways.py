@@ -311,7 +311,7 @@ class Giveaways(commands.Cog):
 									continue
 
 								if roblox_user == None:
-									cursor.execute("UPDATE users SET roblox_id = ? WHERE user_id = ?", (None, user.id,))
+									cursor.execute("UPDATE users SET roblox_id = %s WHERE user_id = %s", (None, user.id,))
 									db.commit()
 
 									await message.remove_reaction("🎉", member)
