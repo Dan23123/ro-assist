@@ -23,7 +23,8 @@ cursor.execute("""
 		robux BIGINT DEFAULT 0 NOT NULL,
 		roblox_id BIGINT DEFAULT NULL,
 		job_id SMALLINT DEFAULT NULL,
-		inventory TEXT DEFAULT '[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]' NOT NULL
+		inventory TEXT DEFAULT '[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]' NOT NULL,
+		daily_reward_time BIGINT
 	);
 
 	CREATE TABLE IF NOT EXISTS giveaways (
@@ -36,8 +37,11 @@ cursor.execute("""
 		ends_at BIGINT NOT NULL,
 		ended BOOLEAN DEFAULT false NOT NULL
 	);
+
+	ALTER TABLE users 
+	ADD COLUMN daily_reward_time BIGINT;
 """)
-db.commit()
+# db.commit()
 
 def add_guild(guild_id):
 	cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s);", (guild_id,))

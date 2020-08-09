@@ -62,7 +62,7 @@ class Info(commands.Cog):
 
 			await ctx.send(embed = embed)
 		elif isinstance(error, commands.CommandOnCooldown):
-			embed = discord.Embed(title = "Command Error", description = f"You can use this command {error.cooldown.rate} time every {error.cooldown.per / 60} minutes. Retry after {round(error.retry_after)} seconds. :x:", colour = discord.Colour.red())
+			embed = discord.Embed(title = "Command Error", description = f"You can use this command {error.cooldown.rate} time every {time.strftime('%M', time.gmtime(error.cooldown.per))} minutes. Retry after {time.strftime('%M', time.gmtime(error.retry_after))} seconds. :x:", colour = discord.Colour.red())
 			embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
 			await ctx.send(embed = embed)

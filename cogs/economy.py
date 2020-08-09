@@ -12,6 +12,7 @@ from typing import Optional
 from math import ceil
 
 XP_RATE = 200
+DAILY_REWARD = 2000
 
 JOBS = [
 	{"name": "Janitor", "id": 0, "lvl_required": 5, "robux_payment": (1, 20), "message": "You earned {} robux by clearing building. :moneybag:"},
@@ -708,6 +709,35 @@ class Economy(commands.Cog):
 
 		await ctx.send(embed = embed_success)
 		CURRENTLY_TRADING_USERS.remove(ctx.author.id)
+
+	@commands.command(
+		name = "daily-reward",
+		description = "Claim your daily reward."
+	)
+	async def daily_reward(self, ctx):
+		user = get_user(ctx.author.id)
+
+		if user[7] == None:
+			cursor.execute("UPDATE users SET daily_reward_time = %s WHERE user_id = %s", (time.time(), ctx.author.id,))
+			# db.commit()
+
+		if time.time() >= user[7]:
+			cursor.execute(
+			f"""
+			UPDATE users SET daily_reward_time = %s WHERE user_id = %s;
+			UPDATE users SET robux = robux + {DAILY_REWARD} WHERE user_id = %s
+			""", (time.time() + 86400, ctx.author.id, ctx.author.id,))
+			# db.commit()
+
+			embed_success = discord.Embed(title = "Daily Reward", description = f"You claimed your daily reward ({DAILY_REWARD} robux). :white_check_mark:", colour = discord.Colour.green())
+			embed_success.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			await ctx.send(embed = embed_success)
+		else:
+			embed_failure = discord.Embed(title = "Daily reward", description = f"You can claim your daily reward after {time.strftime('%H', time.gmtime(user[7] - time.time()))} hour(s). :x:", colour = discord.Colour.red())
+			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			return await ctx.send(embed = embed_failure)
 
 	@commands.command(
 		name = "add-stat"
