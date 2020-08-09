@@ -37,9 +37,6 @@ cursor.execute("""
 		ends_at BIGINT NOT NULL,
 		ended BOOLEAN DEFAULT false NOT NULL
 	);
-
-	ALTER TABLE users 
-	ADD COLUMN daily_reward_time BIGINT;
 """)
 # db.commit()
 
