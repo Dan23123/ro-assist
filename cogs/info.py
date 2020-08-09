@@ -3,6 +3,7 @@ import aiohttp
 import os
 import psutil
 import sys
+import time
 
 from discord.ext import commands, tasks
 from database import db, cursor, get_guild
