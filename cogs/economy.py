@@ -716,12 +716,14 @@ class Economy(commands.Cog):
 	)
 	async def daily_reward(self, ctx):
 		user = get_user(ctx.author.id)
+		tm = user[7]
 
-		if user[7] == None:
+		if tm == None:
 			cursor.execute("UPDATE users SET daily_reward_time = %s WHERE user_id = %s", (time.time(), ctx.author.id,))
 			# db.commit()
+			tm = time.time()
 
-		if time.time() >= user[7]:
+		if tm >= user[7]:
 			cursor.execute(
 			f"""
 			UPDATE users SET daily_reward_time = %s WHERE user_id = %s;
