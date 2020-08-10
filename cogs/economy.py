@@ -723,7 +723,7 @@ class Economy(commands.Cog):
 			# db.commit()
 			tm = time.time()
 
-		if tm >= user[7]:
+		if time.time() >= tm:
 			cursor.execute(
 			f"""
 			UPDATE users SET daily_reward_time = %s WHERE user_id = %s;
