@@ -41,7 +41,7 @@ class Info(commands.Cog):
 	@tasks.loop(seconds = 10.0)
 	async def discordbotspoststats(self):
 		async with aiohttp.ClientSession() as session:
-			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN, "Content-Type": "application/json"}) as r:
+			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN}) as r:
 				pass
 
 	@commands.Cog.listener()
