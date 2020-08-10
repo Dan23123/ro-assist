@@ -41,12 +41,8 @@ class Info(commands.Cog):
 	@tasks.loop(seconds = 10.0)
 	async def discordbotspoststats(self):
 		async with aiohttp.ClientSession() as session:
-			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN, "Content-Type": "application/json"}) as r:
-				try:
-					data = await r.json()
-					print(f"[STATS POST] {data}")
-				except:
-					print(f"[STATS POST] {r.content}")
+			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN, "Content-Type": "application/json"}) as r:
+				pass
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
