@@ -304,10 +304,12 @@ class Giveaways(commands.Cog):
 							if req_args[0] == "2":
 								if user_obj[4] == None:
 									await message.remove_reaction("🎉", member)
+									
 									try:
 										await user.send(f"You need to verify first to join ROBLOX giveaways. :x:\n{message.jump_url}")
 									except:
 										pass
+
 									continue
 
 								if roblox_user == None:
