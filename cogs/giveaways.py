@@ -205,7 +205,7 @@ class Giveaways(commands.Cog):
 		reaction = discord.utils.get(message.reactions, emoji = "🎉")
 
 		if reaction == None or reaction.count == 1:
-			return await channel.send(f"I couldn't determinate the winner (Reaction not found or nobody reacted).\n{message.jump_url}")
+			return await ctx.send(f"I couldn't determinate the winner (Reaction not found or nobody reacted).\n{message.jump_url}")
 
 		users = await reaction.users().flatten()
 		users.remove(self.bot.user)
@@ -216,9 +216,9 @@ class Giveaways(commands.Cog):
 				winner = choice(users)
 				winners.append(winner.mention)
 
-				await ctx.channel.send(f"Congratulations, {winner.mention}, you won the **{giveaway[3]}**. :tada:\n{message.jump_url}")
+				await ctx.send(f"Congratulations, {winner.mention}, you won the **{giveaway[3]}**. :tada:\n{message.jump_url}")
 			else:
-				await ctx.channel.send(f"I couldn't determinate the winner.\n{message.jump_url}")
+				await ctx.send(f"I couldn't determinate the winner.\n{message.jump_url}")
 
 		cursor.execute("UPDATE giveaways SET ended = %s WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (True, ctx.guild.id, ctx.channel.id, message_id,))
 		db.commit()
