@@ -220,7 +220,7 @@ class Giveaways(commands.Cog):
 			else:
 				await ctx.channel.send(f"I couldn't determinate the winner.\n{message.jump_url}")
 
-		cursor.execute("UPDATE giveaways SET ended = ? WHERE guild_id = ? AND channel_id = ? AND message_id = ?", (True, ctx.guild.id, ctx.channel.id, message_id,))
+		cursor.execute("UPDATE giveaways SET ended = %s WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (True, ctx.guild.id, ctx.channel.id, message_id,))
 		db.commit()
 
 		embed_giveaway = message.embeds[0].copy()
