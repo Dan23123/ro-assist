@@ -21,7 +21,7 @@ class Info(commands.Cog):
 		self.richpresence.start()
 		self.discordbotspoststats.start()
 
-	@tasks.loop(seconds = 10.0)
+	@tasks.loop(seconds = 20.0)
 	async def richpresence(self):
 		activity = ""
 		choice = randint(0, 2)
