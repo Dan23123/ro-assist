@@ -369,5 +369,7 @@ class Giveaways(commands.Cog):
 				db.commit()
 			except (discord.NotFound, discord.Forbidden):
 				delete_giveaway(giveaway[0], giveaway[1], giveaway[2])
+			except Exception as ex:
+				print(f"[GIVEAWAY LOOP] {ex}")
 def setup(bot):
 	bot.add_cog(Giveaways(bot))
