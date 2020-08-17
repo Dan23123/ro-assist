@@ -312,6 +312,7 @@ class Giveaways(commands.Cog):
 
 									continue
 
+								roblox_cog = self.bot.get_cog("Roblox")
 								roblox_user = await roblox_cog.get_user(user_obj[4])
 
 								if roblox_user == None:
@@ -327,7 +328,6 @@ class Giveaways(commands.Cog):
 									continue
 	
 								req_args[1] = int(req_args[1])
-								roblox_cog = self.bot.get_cog("Roblox")
 
 								found = False
 
