@@ -312,6 +312,8 @@ class Giveaways(commands.Cog):
 
 									continue
 
+								roblox_user = await roblox_cog.get_user(user_obj[4])
+
 								if roblox_user == None:
 									cursor.execute("UPDATE users SET roblox_id = %s WHERE user_id = %s", (None, user.id,))
 									db.commit()
@@ -326,7 +328,6 @@ class Giveaways(commands.Cog):
 	
 								req_args[1] = int(req_args[1])
 								roblox_cog = self.bot.get_cog("Roblox")
-								roblox_user = await roblox_cog.get_user(user_obj[4])
 
 								found = False
 
