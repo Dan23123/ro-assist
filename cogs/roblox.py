@@ -29,7 +29,7 @@ class Roblox(commands.Cog):
 		embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 		await ctx.send(embed = embed)
 
-		user = await self.get_user(username)
+		user = await self.get_user_by_username(username)
 		if user != None:
 			embed_user_data = discord.Embed(title = username, colour = discord.Colour.green())
 			embed_user_data.set_thumbnail(url = user["AvatarUrl"])
@@ -101,7 +101,7 @@ class Roblox(commands.Cog):
 		
 			await ctx.send(embed = embed_step1)
 			message1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
-			user = await self.get_user(message1.content)
+			user = await self.get_user_by_username(message1.content)
 
 			if user == None:
 				embed_failure = discord.Embed(title = "Verification", description = "Failed to verify: invalid user. :x:", colour = discord.Colour.red())
@@ -163,7 +163,14 @@ class Roblox(commands.Cog):
 
 		return " ".join(words)
 
-	async def get_user(self, username):
+	async def get_user(self, user_id):
+		async with aiohttp.ClientSession() as session:
+			async with session.get(f"https://api.roblox.com/users/{user_id}") as r:
+				result = await r.json()
+				nickname = result["Nickname"]
+				return await self.get_user_by_username(nickname)
+
+	async def get_user_by_username(self, username):
 		async with aiohttp.ClientSession() as session:
 			async with session.get(f"https://api.roblox.com/users/get-by-username?username={username}") as r:
 				result = await r.json()
