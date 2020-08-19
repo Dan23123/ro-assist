@@ -56,7 +56,7 @@ class Info(commands.Cog):
 			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers) as r:
 				pass
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers) as r:
-				pass
+				print(f"[POST] {await r.json()}")
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
