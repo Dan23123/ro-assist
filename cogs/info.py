@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 from database import db, cursor, get_guild
 from math import ceil
 from random import randint
-from config import BOT_VERSION, DISCORD_BOTS_TOKEN
+from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
 
 COMMANDS_PER_PAGE = 9
 IGNORE_COMMANDS = ["add-stat", "set-stat"]
@@ -19,7 +19,7 @@ class Info(commands.Cog):
 		self.bot = bot
 		self.bot.remove_command("help")
 		self.richpresence.start()
-		self.discordbotspoststats.start()
+		self.stats_post.start()
 
 	@tasks.loop(seconds = 20.0)
 	async def richpresence(self):
@@ -39,9 +39,23 @@ class Info(commands.Cog):
 		)
 
 	@tasks.loop(seconds = 10.0)
-	async def discordbotspoststats(self):
+	async def stats_post(self):
 		async with aiohttp.ClientSession() as session:
-			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = {"guildCount": len(self.bot.guilds)}, headers = {"Authorization": DISCORD_BOTS_TOKEN}) as r:
+			headers = {
+				"Authorization": DISCORD_BOTS_TOKEN
+			}
+
+			data1 = {
+				"guildCount": len(self.bot.guilds)
+			}
+			data2 = {
+				"guilds": len(self.bot.guilds),
+				"users": len(self.bot.users)
+			}
+
+			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers) as r:
+				pass
+			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers) as r:
 				pass
 
 	@commands.Cog.listener()
