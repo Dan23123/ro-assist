@@ -123,10 +123,10 @@ class Info(commands.Cog):
 		description = "Gets information about the bot"
 	)
 	async def info_bot(self, ctx):
-		embed_info = discord.Embed(name = "Bot's Info", description = f"Created with discord.py {discord.__version__}", colour = discord.Colour.green())
+		embed_info = discord.Embed(name = "Bot's Info", description = f"Using {discord.__version__}", colour = discord.Colour.green())
 
 		embed_info.add_field(name = "Ping", value = f"{round(self.bot.latency * 1000)}ms", inline = False)
-		embed_info.add_field(name = "Memory Usage", value = f"{round(psutil.Process(os.getpid()).memory_info().rss / 1024 / 1000)}MB", inline = False)
+		embed_info.add_field(name = "Memory Usage", value = f"{round(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)}MB / {psutil.virtual_memory().available / 1024 ** 2}MB", inline = False)
 		embed_info.add_field(name = "Bot's Version", value = BOT_VERSION, inline = False)
 		embed_info.add_field(name = "Servers", value = len(self.bot.guilds), inline = False)
 		embed_info.add_field(name = "Users", value = len(self.bot.users), inline = False)
