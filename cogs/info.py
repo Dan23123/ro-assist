@@ -18,11 +18,10 @@ class Info(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.bot.remove_command("help")
-		self.richpresence.start()
-		self.stats_post.start()
+		self.data_update.start()
 
-	@tasks.loop(seconds = 20.0)
-	async def richpresence(self):
+	@tasks.loop(seconds = 15.0)
+	async def data_update(self):
 		activity = ""
 		choice = randint(0, 2)
 
@@ -38,11 +37,12 @@ class Info(commands.Cog):
 			status = discord.Status.dnd
 		)
 
-	@tasks.loop(seconds = 10.0)
-	async def stats_post(self):
 		async with aiohttp.ClientSession() as session:
-			headers = {
+			headers1 = {
 				"Authorization": DISCORD_BOTS_TOKEN
+			}
+			headers2 = {
+				"Authorization": DISCORD_BOT_LIST_TOKEN
 			}
 
 			data1 = {
@@ -53,11 +53,10 @@ class Info(commands.Cog):
 				"users": len(self.bot.users)
 			}
 
-			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers) as r:
+			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers1) as r:
 				pass
-			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers) as r:
-				result = await r.json()
-				print(f"[POST] {result}")
+			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
+				pass
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
