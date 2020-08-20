@@ -114,7 +114,7 @@ class Economy(commands.Cog):
 			if random() <= 0.50:
 				await self.give_exp(message.author.id, randint(1, 3), message)
 
-			if random() <= 0.005:
+			if random() <= 0.0005:
 				robux = randint(1, 3000)
 				await message.channel.send(embed = discord.Embed(title = "Event", description = f"There's a {robux} robux on the ground. Say pick-up to pick them up! You have 30 seconds!", colour = discord.Colour.green()))
 
