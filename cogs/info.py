@@ -6,7 +6,7 @@ import sys
 import time
 
 from discord.ext import commands, tasks
-from database import db, cursor, get_guild, get_all_guilds, delete_all_giveaways
+from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways
 from math import ceil
 from random import randint
 from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
