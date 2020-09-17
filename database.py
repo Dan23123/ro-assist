@@ -44,6 +44,10 @@ def add_guild(guild_id):
 	cursor.execute("INSERT INTO guilds (guild_id) VALUES (%s);", (guild_id,))
 	# db.commit()
 
+def delete_guild(guild_id):
+	cursor.execute("DELETE FROM guilds WHERE guild_id = %s", (guild_id,))
+	# db.commit()
+
 def get_guild(guild_id):
 	cursor.execute("SELECT * FROM guilds WHERE guild_id = %s;", (guild_id,))
 	result = cursor.fetchone()
@@ -53,6 +57,10 @@ def get_guild(guild_id):
 		result = get_guild(guild_id)
 
 	return result
+
+def get_all_guilds():
+	cursor.execute("SELECT * FROM guilds")
+	return cursor.fetchone()
 
 def add_user(user_id):
 	cursor.execute("INSERT INTO users (user_id) VALUES (%s);", (user_id,))

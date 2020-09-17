@@ -6,7 +6,7 @@ import sys
 import time
 
 from discord.ext import commands, tasks
-from database import db, cursor, get_guild
+from database import db, cursor, get_guild, get_all_guilds, delete_all_giveaways
 from math import ceil
 from random import randint
 from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
@@ -19,6 +19,7 @@ class Info(commands.Cog):
 		self.bot = bot
 		self.bot.remove_command("help")
 		self.data_update.start()
+		self.autocleaner.start()
 
 	@tasks.loop(seconds = 15.0)
 	async def data_update(self):
@@ -57,6 +58,16 @@ class Info(commands.Cog):
 				pass
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
 				pass
+
+	@tasks.loop(minutes = 1.0)
+	async def autocleaner(self):
+		for guild in get_all_guilds():
+			if self.bot.get_guild(guild[0]) == None:
+				delete_guild(guild[0])
+
+		for gw in get_all_giveaways():
+			if time.time() >= (gw[6] + 86400):
+				delete_giveaway(gw[0], gw[1], gw[2])
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
