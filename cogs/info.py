@@ -59,7 +59,7 @@ class Info(commands.Cog):
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
 				pass
 
-	@tasks.loop(minutes = 1.0)
+	@tasks.loop(minutes = 30.0)
 	async def autocleaner(self):
 		for guild in get_all_guilds():
 			if self.bot.get_guild(guild[0]) == None:
