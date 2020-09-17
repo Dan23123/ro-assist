@@ -6,7 +6,7 @@ import sys
 import time
 
 from discord.ext import commands, tasks
-from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways, get_all_users, delete_user
+from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways, get_all_users, delete_user, delete_guild, delete_giveaway
 from math import ceil
 from random import randint
 from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
@@ -62,17 +62,14 @@ class Info(commands.Cog):
 	@tasks.loop(minutes = 1.0)
 	async def autocleaner(self):
 		for guild in get_all_guilds():
-			print(f"[AutoCleaner] {self.bot.get_guild(guild[0])}")
 			if self.bot.get_guild(guild[0]) == None:
 				delete_guild(guild[0])
 
 		for gw in get_all_giveaways():
-			print(f"[AutoCleaner] {gw}")
 			if time.time() >= (gw[6] + 86400):
 				delete_giveaway(gw[0], gw[1], gw[2])
 
 		for user in get_all_users():
-			print(f"[AutoCleaner] {self.bot.get_user(user[0])}")
 			if self.bot.get_user(user[0]) == None:
 				delete_user(user[0])
 
