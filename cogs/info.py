@@ -6,7 +6,7 @@ import sys
 import time
 
 from discord.ext import commands, tasks
-from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways
+from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways, get_all_users, delete_user
 from math import ceil
 from random import randint
 from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
@@ -68,6 +68,10 @@ class Info(commands.Cog):
 		for gw in get_all_giveaways():
 			if time.time() >= (gw[6] + 86400):
 				delete_giveaway(gw[0], gw[1], gw[2])
+
+		for user in get_all_users():
+			if self.bot.get_user(user[0]) == None:
+				delete_user(user[0])
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):

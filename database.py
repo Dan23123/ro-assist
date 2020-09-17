@@ -45,7 +45,7 @@ def add_guild(guild_id):
 	# db.commit()
 
 def delete_guild(guild_id):
-	cursor.execute("DELETE FROM guilds WHERE guild_id = %s", (guild_id,))
+	cursor.execute("DELETE FROM guilds WHERE guild_id = %s;", (guild_id,))
 	# db.commit()
 
 def get_guild(guild_id):
@@ -59,7 +59,7 @@ def get_guild(guild_id):
 	return result
 
 def get_all_guilds():
-	cursor.execute("SELECT * FROM guilds")
+	cursor.execute("SELECT * FROM guilds;")
 	return cursor.fetchall()
 
 def add_user(user_id):
@@ -83,6 +83,10 @@ def get_all_users():
 def get_top10_users(order_by, limit):
 	cursor.execute(f"SELECT * FROM users ORDER BY {order_by} DESC LIMIT 10;")
 	return cursor.fetchall()
+
+def delete_user(user_id):
+	cursor.execute("DELETE FROM users WHERE user_id = %s;", (user_id,))
+	# db.commit()
 
 def add_giveaway(guild_id, channel_id, message_id, reward, winners, requirements, ends_at):
 	cursor.execute("INSERT INTO giveaways (guild_id, channel_id, message_id, reward, winners, requirements, ends_at) VALUES (%s, %s, %s, %s, %s, %s, %s);", (guild_id, channel_id, message_id, reward, winners, requirements, ends_at,))
