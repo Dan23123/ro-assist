@@ -60,7 +60,7 @@ def get_guild(guild_id):
 
 def get_all_guilds():
 	cursor.execute("SELECT * FROM guilds")
-	return cursor.fetchone()
+	return cursor.fetchall()
 
 def add_user(user_id):
 	cursor.execute("INSERT INTO users (user_id) VALUES (%s);", (user_id,))
