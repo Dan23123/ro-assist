@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 from database import db, cursor, get_guild, get_all_guilds, get_all_giveaways, get_all_users, delete_user, delete_guild, delete_giveaway
 from math import ceil
 from random import randint
-from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN
+from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN, RBL_BOT_TOKEN
 
 COMMANDS_PER_PAGE = 9
 IGNORE_COMMANDS = ["add-stat", "set-stat"]
@@ -45,6 +45,10 @@ class Info(commands.Cog):
 			headers2 = {
 				"Authorization": DISCORD_BOT_LIST_TOKEN
 			}
+			headers3 = {
+				"Authorization": RBL_BOT_TOKEN,
+				"Content-Type": "application/json"
+			}
 
 			data1 = {
 				"guildCount": len(self.bot.guilds)
@@ -53,10 +57,15 @@ class Info(commands.Cog):
 				"guilds": len(self.bot.guilds),
 				"users": len(self.bot.users)
 			}
+			data3 = {
+				"guildCount": len(self.bot.guilds)
+			}
 
 			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers1) as r:
 				pass
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
+				pass
+			async with session.post(f"https://bots.rovelstars.ga/api/v1/bots/{self.bot.user.id}/stats" data = data3, headers = headers3) as r:
 				pass
 
 	@tasks.loop(minutes = 30.0)
