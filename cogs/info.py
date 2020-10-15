@@ -46,8 +46,7 @@ class Info(commands.Cog):
 				"Authorization": DISCORD_BOT_LIST_TOKEN
 			}
 			headers3 = {
-				"Authorization": RBL_BOT_TOKEN,
-				"Content-Type": "application/json"
+				"Authorization": RBL_BOT_TOKEN
 			}
 
 			data1 = {
