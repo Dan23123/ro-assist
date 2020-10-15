@@ -22,6 +22,15 @@ class Fun(commands.Cog):
 		await ctx.send(embed = discord.Embed(title = "How Cool", description = f"{member.mention} is {progress}% cool.", colour = discord.Colour.from_hsv(progress / 255, 1, 1)))
 
 	@commands.command(
+		name = "how-gay",
+		description = "You know what it does",
+		usage = "[user]"
+	)
+	async def howgay(self, ctx, member: discord.Member):
+		progress = randint(0, 100)
+		await ctx.send(embed = discord.Embed(title = "How Gay", description = f"{member.mention} is {progress}% gay.", colour = discord.Colour.from_hsv(progress / 255, 1, 1)))
+
+	@commands.command(
 		description = "Sends random meme from reddit"
 	)
 	async def meme(self, ctx):
