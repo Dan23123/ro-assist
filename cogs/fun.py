@@ -31,6 +31,15 @@ class Fun(commands.Cog):
 		await ctx.send(embed = discord.Embed(title = "How Gay", description = f"{member.mention} is {progress}% gay.", colour = discord.Colour.from_hsv(progress / 255, 1, 1)))
 
 	@commands.command(
+		name = "iq-test",
+		description = "Shows user's IQ",
+		usage = "[user]"
+	)
+	async def iqtest(self, ctx, member: discord.Member):
+		iq = randint(0, 160)
+		await ctx.send(embed = discord.Embed(title = "IQ Test", description =f"{member.mention}'s IQ is {iq}.", colour = discord.Colour.blurple()))
+
+	@commands.command(
 		description = "Sends random meme from reddit"
 	)
 	async def meme(self, ctx):
