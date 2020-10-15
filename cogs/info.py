@@ -65,7 +65,7 @@ class Info(commands.Cog):
 				pass
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
 				pass
-			async with session.post(f"https://bots.rovelstars.ga/api/v1/bots/{self.bot.user.id}/stats" data = data3, headers = headers3) as r:
+			async with session.post(f"https://bots.rovelstars.ga/api/v1/bots/{self.bot.user.id}/stats", data = data3, headers = headers3) as r:
 				pass
 
 	@tasks.loop(minutes = 30.0)
