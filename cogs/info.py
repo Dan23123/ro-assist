@@ -13,6 +13,7 @@ from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN, RBL_
 
 COMMANDS_PER_PAGE = 9
 IGNORE_COMMANDS = ["add-stat", "set-stat"]
+GIVEAWAYS_DAY_RATE = 2
 
 class Info(commands.Cog):
 	def __init__(self, bot):
@@ -74,7 +75,7 @@ class Info(commands.Cog):
 				delete_guild(guild[0])
 
 		for gw in get_all_giveaways():
-			if time.time() >= (gw[6] + 86400):
+			if time.time() >= (gw[6] + 86400 * GIVEAWAYS_DAY_RATE):
 				delete_giveaway(gw[0], gw[1], gw[2])
 
 		for user in get_all_users():
