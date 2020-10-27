@@ -18,8 +18,11 @@ COGS_LIST = [
 async def get_prefix(bot, message):
 	return commands.when_mentioned_or(get_guild(message.guild.id)[1])(bot, message)
 
+intents = discord.Intents.default()
+intents.members = True
 client = commands.Bot(
-	command_prefix = get_prefix
+	command_prefix = get_prefix,
+	intents = intents
 )
 
 @client.event

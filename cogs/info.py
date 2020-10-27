@@ -68,7 +68,7 @@ class Info(commands.Cog):
 			async with session.post(f"https://bots.rovelstars.ga/api/v1/bots/{self.bot.user.id}/stats", json = data3, headers = headers3) as r:
 				pass
 
-	@tasks.loop(minutes = 30.0)
+	@tasks.loop(minutes = 86400.0)
 	async def autocleaner(self):
 		for guild in get_all_guilds():
 			if self.bot.get_guild(guild[0]) == None:
