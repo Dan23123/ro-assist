@@ -367,7 +367,7 @@ class Giveaways(commands.Cog):
 					await message.edit(embed = embed_giveaway)
 
 					cursor.execute("UPDATE giveaways SET ended = true WHERE guild_id = %s AND channel_id = %s AND message_id = %s", (giveaway[0], giveaway[1], giveaway[2],))
-				db.commit()
+					db.commit()
 			except (discord.NotFound, discord.Forbidden):
 				delete_giveaway(giveaway[0], giveaway[1], giveaway[2])
 			except Exception as ex:

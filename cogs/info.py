@@ -22,7 +22,7 @@ class Info(commands.Cog):
 		self.data_update.start()
 		self.autocleaner.start()
 
-	@tasks.loop(seconds = 15.0)
+	@tasks.loop(seconds = 600.0)
 	async def data_update(self):
 		activity = ""
 		choice = randint(0, 2)
