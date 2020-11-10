@@ -54,33 +54,19 @@ class Info(commands.Cog):
 				"guildCount": len(self.bot.guilds)
 			}
 			data2 = {
-				"guilds": len(self.bot.guilds),
-				"users": len(self.bot.users)
-			}
-			data3 = {
-				"guildCount": len(self.bot.guilds)
+				"guilds": len(self.bot.guilds)
 			}
 
 			async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data1, headers = headers1) as r:
 				pass
 			async with session.post(f"https://discordbotlist.com/api/v1/bots{self.bot.user.id}/stats", data = data2, headers = headers2) as r:
 				pass
-			async with session.post(f"https://bots.rovelstars.ga/api/v1/bots/{self.bot.user.id}/stats", json = data3, headers = headers3) as r:
-				pass
 
 	@tasks.loop(minutes = 86400.0)
 	async def autocleaner(self):
-		for guild in get_all_guilds():
-			if self.bot.get_guild(guild[0]) == None:
-				delete_guild(guild[0])
-
 		for gw in get_all_giveaways():
 			if time.time() >= (gw[6] + 86400 * GIVEAWAYS_DAY_RATE):
 				delete_giveaway(gw[0], gw[1], gw[2])
-
-		for user in get_all_users():
-			if self.bot.get_user(user[0]) == None:
-				delete_user(user[0])
 
 	@commands.Cog.listener()
 	async def on_error(self, event, *args, **kwargs):
