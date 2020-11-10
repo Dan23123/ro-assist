@@ -164,15 +164,21 @@ class Economy(commands.Cog):
 	async def level_leaderboard(self, ctx):
 		users = get_top10_users("level", 10)
 
-		leaderboard = """```"""
+		if len(users) > 0:
+			leaderboard = "```"
 
-		for i in range(len(users)):
-			user = discord.utils.get(self.bot.users, id = users[i][0])
-			if user:
-				leaderboard += f"{i + 1}. {user} - {users[i][1]} level\n"
-		leaderboard += "```"
+			for i in range(len(users)):
+				user = discord.utils.get(self.bot.users, id = users[i][0])
+				if user:
+					leaderboard += f"{i + 1}. {user} - {users[i][1]} level\n"
+			leaderboard += "```"
 
-		await ctx.send(embed = discord.Embed(title = "Level Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+			await ctx.send(embed = discord.Embed(title = "Level Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+		else:
+			embed_failure = discord.Embed(title = "Leaderboard", description = "Leaderboard is empty.", colour = discord.Colour.red())
+			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			await ctx.send(embed = embed_failure)
 
 	@commands.command(
 		name = "exp-leaderboard",
@@ -181,14 +187,20 @@ class Economy(commands.Cog):
 	async def exp_leaderboard(self, ctx):
 		users = get_top10_users("exp", 10)
 
-		leaderboard = """```"""
-		for i in range(len(users)):
-			user = discord.utils.get(self.bot.users, id = users[i][0])
-			if user:
-				leaderboard += f"{i + 1}. {user} - {users[i][2]} exp\n"
-		leaderboard += "```"
+		if len(users) > 0:
+			leaderboard = "```"
+			for i in range(len(users)):
+				user = discord.utils.get(self.bot.users, id = users[i][0])
+				if user:
+					leaderboard += f"{i + 1}. {user} - {users[i][2]} exp\n"
+			leaderboard += "```"
 
-		await ctx.send(embed = discord.Embed(title = "Exp Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+			await ctx.send(embed = discord.Embed(title = "Exp Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+		else:
+			embed_failure = discord.Embed(title = "Leaderboard", description = "Leaderboard is empty.", colour = discord.Colour.red())
+			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			await ctx.send(embed = embed_failure)
 
 	@commands.command(
 		name = "robux-leaderboard",
@@ -197,14 +209,20 @@ class Economy(commands.Cog):
 	async def robuxleaderboard(self, ctx):
 		users = get_top10_users("robux", 10)
 
-		leaderboard = """```"""
-		for i in range(len(users)):
-			user = discord.utils.get(self.bot.users, id = users[i][0])
-			if user:
-				leaderboard += f"{i + 1}. {user} - {users[i][3]} robux\n"
-		leaderboard += "```"
+		if len(users) > 0:
+			leaderboard = "```"
+			for i in range(len(users)):
+				user = discord.utils.get(self.bot.users, id = users[i][0])
+				if user:
+					leaderboard += f"{i + 1}. {user} - {users[i][3]} robux\n"
+			leaderboard += "```"
 
-		await ctx.send(embed = discord.Embed(title = "Robux Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+			await ctx.send(embed = discord.Embed(title = "Robux Leaderboard", description = leaderboard, colour = discord.Colour.green()))
+		else:
+			embed_failure = discord.Embed(title = "Leaderboard", description = "Leaderboard is empty.", colour = discord.Colour.red())
+			embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+
+			await ctx.send(embed = embed_failure)
 
 	@commands.command(
 		description = "Earn robux by completing the quiz (20-60 robux reward)"
