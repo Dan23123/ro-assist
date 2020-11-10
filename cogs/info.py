@@ -25,11 +25,9 @@ class Info(commands.Cog):
 	@tasks.loop(seconds = 600.0)
 	async def data_update(self):
 		activity = ""
-		choice = randint(0, 2)
+		choice = randint(0, 1)
 
 		if choice == 0:
-			activity = f"{len(self.bot.users)} members"
-		elif choice == 1:
 			activity = f"{len(self.bot.commands)} commands"
 		else:
 			activity = f"{len(self.bot.guilds)} servers"
