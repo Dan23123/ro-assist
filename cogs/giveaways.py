@@ -110,7 +110,7 @@ Ends **{time_string}**
 {requirement_text}
         """, colour = discord.Colour.blurple())
 
-        giveaway_message = await ctx.send("React with :tada: to enter the giveaway.", embed = embed_giveaway)
+        giveaway_message = await targetChannel.send("React with :tada: to enter the giveaway.", embed = embed_giveaway)
         await giveaway_message.add_reaction("🎉")
 
         add_giveaway(ctx.guild.id, targetChannel.id, giveaway_message.id, reward, winners, db_requirements, giveaway_time)
