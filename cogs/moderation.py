@@ -32,7 +32,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Kick", description = "You can't kick that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -61,7 +61,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Ban", description = "You can't kick ban user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -129,7 +129,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Mute", description = "You can't mute that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
