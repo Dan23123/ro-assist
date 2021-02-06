@@ -322,8 +322,10 @@ Ends **{time_string}**
                                     
                                 try:
                                     await user.send(f"You need to verify first to join ROBLOX giveaways. :x:\n{message.jump_url}")
-                                finally:
-                                    continue
+                                except:
+                                    pass
+
+                                continue
 
                             roblox_cog = self.bot.get_cog("Roblox")
                             roblox_user = await roblox_cog.get_user(user_obj[4])
@@ -335,9 +337,11 @@ Ends **{time_string}**
                                 await message.remove_reaction("🎉", member)
                                 try:
                                     await user.send(f"Your ROBLOX account was not found. :x:\n{message.jump_url}")
-                                finally:
-                                    continue
-    
+                                except:
+                                    pass
+
+                                continue
+
                             req_args[1] = int(req_args[1])
                             found = False
 
