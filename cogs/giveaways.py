@@ -104,11 +104,11 @@ class Giveaways(commands.Cog):
                     requirement_text += f"https://www.roblox.com/groups/{requirement.data}/group\n"
 
         embed_giveaway = discord.Embed(title = "Giveaway", description = f"""
-        Reward: **{reward}**
-        Winners: **{winners}**
-        Ends **{time_string}**
+Reward: **{reward}**
+Winners: **{winners}**
+Ends **{time_string}**
 
-        {requirement_text}
+{requirement_text}
         """, colour = discord.Colour.blurple())
 
         giveaway_message = await ctx.send("React with :tada: to enter the giveaway.", embed = embed_giveaway)
