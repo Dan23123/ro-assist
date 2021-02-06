@@ -11,6 +11,7 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         guild = get_guild(channel.guild.id)
+
         if guild[5] != None:
             role = channel.guild.get_role(guild[5])
             if role != None:
@@ -31,13 +32,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        """
-        if (message.author.id !== message.guild.ownerID
-                && (targetUser.id === message.guild.ownerID || !message.member.roles.highest.comparePositionTo(targetUser.roles.highest)))
-            return sendErrorEmbed(message, ":x: You can't ban that user.");
-        """
-
-        if ctx.author.top_role <= target.top_role:
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Kick", description = "You can't kick that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -66,8 +61,8 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author.top_role <= target.top_role:
-            embed_failure = discord.Embed(title = "Ban", description = "You can't ban that user. :x:", colour = discord.Colour.red())
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
+            embed_failure = discord.Embed(title = "Ban", description = "You can't kick ban user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
             return await ctx.send(embed = embed_failure)
@@ -95,6 +90,7 @@ class Moderation(commands.Cog):
             if ban_entry.user.id == user_id:
                 await ctx.guild.unban(ban_entry.user, reason = reason)
                 await ctx.send(embed = discord.Embed(title = "Unban", description = f"{ban_entry.user} has been unbanned by {ctx.author.mention}. Reason: {reason}", colour = discord.Colour.green()))
+
                 return
 
         embed_failure = discord.Embed(title = "Unban", description = "User not found. :x:", colour = discord.Colour.red())
@@ -133,7 +129,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author.top_role <= target.top_role:
+        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner || ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Mute", description = "You can't mute that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
