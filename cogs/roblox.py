@@ -1,5 +1,6 @@
 import discord
 import aiohttp
+import asyncio
 
 from discord.ext import commands
 from bs4 import BeautifulSoup
@@ -60,22 +61,30 @@ class Roblox(commands.Cog):
     async def setupverify(self, ctx):
         check = lambda message: message.channel == ctx.channel and message.author == ctx.author
 
-        await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 1: choose which role you want to give after completing verification (you can skip this step by saying \"skip\").\n(30 seconds to answer)", colour = discord.Colour.blurple()))
+        await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 1: which channel?\n(30 seconds to answer)", colour = discord.Colour.blurple()))
         msg1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
+        
+        try:
+            targetChannel = await commands.TextChannelConverter().convert(ctx, msg1.content)
+        except commands.ChannelNotFound:
+            return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid channel. :x:", colour = discord.Colour.red()))
+
+        await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 2: choose which role you want to give after completing verification (you can skip this step by saying \"skip\").\n(30 seconds to answer)", colour = discord.Colour.blurple()))
+        msg2 = await self.bot.wait_for("message", timeout = 30.0, check = check)
         verification_role = None
 
-        if msg1.content != "skip":
+        if msg2.content != "skip":
             try:
-                role = await commands.RoleConverter().convert(ctx, msg1.content)
+                role = await commands.RoleConverter().convert(ctx, msg2.content)
                 verification_role = role.id
             except:
                 return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid role. :x:", colour = discord.Colour.red()))
 
-        msg2 = await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 2: do you want to set user's nickname as their roblox username?\n(30 seconds to answer)", colour = discord.Colour.blurple()))
-        await msg2.add_reaction("☑️")
-        await msg2.add_reaction("❌")
+        msg3 = await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 3: do you want to set user's nickname as their roblox username?\n(30 seconds to answer)", colour = discord.Colour.blurple()))
+        await msg3.add_reaction("☑️")
+        await msg3.add_reaction("❌")
 
-        reaction, user = await self.bot.wait_for("reaction_add", timeout = 30.0, check = lambda reaction, user: reaction.message.id == msg2.id and user.id == ctx.author.id and reaction.emoji in "☑️❌")
+        reaction, user = await self.bot.wait_for("reaction_add", timeout = 30.0, check = lambda reaction, user: reaction.message.id == msg3.id and user.id == ctx.author.id and reaction.emoji in "☑️❌")
         verification_set_username = None
 
         if reaction.emoji == "☑️":
@@ -83,7 +92,7 @@ class Roblox(commands.Cog):
         else:
             verification_set_username = False
 
-        cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (ctx.channel.id, verification_role, verification_set_username, ctx.guild.id,))
+        cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (targetChannel.id, verification_role, verification_set_username, ctx.guild.id,))
         db.commit()
 
         await ctx.send(embed = discord.Embed(title = "Verification Setup", description = f"Set up verification for {ctx.channel.mention} channel. :white_check_mark:", colour = discord.Colour.green()))
@@ -201,6 +210,9 @@ class Roblox(commands.Cog):
                 result["Groups"] = data["data"]
 
             return result
+
+    def cog_unload(self):
+        asyncio.run(self.session.close())
 
 def setup(bot):
     bot.add_cog(Roblox(bot))

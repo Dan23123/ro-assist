@@ -1,5 +1,6 @@
 import discord
 import aiohttp
+import asyncio
 import os
 import psutil
 import sys
@@ -13,7 +14,7 @@ from config import BOT_VERSION, DISCORD_BOTS_TOKEN, DISCORD_BOT_LIST_TOKEN, RBL_
 
 COMMANDS_PER_PAGE = 9
 GIVEAWAYS_DAY_RATE = 2
-IGNORE_COMMANDS = ["add-stat", "set-stat"]
+IGNORE_COMMANDS = ["add-stat", "set-stat", "global-wipe"]
 
 REPORT_GUILD_ID = 737305540899897404
 REPORT_CHANNEL_ID = 807302428839772160
@@ -50,7 +51,7 @@ class Info(commands.Cog):
             "guildCount": len(self.bot.guilds)
         }
 
-        async with session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data, headers = headers) as req:
+        async with self.session.post(f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats", data = data, headers = headers) as req:
             pass
 
     @tasks.loop(minutes = 86400.0)
@@ -185,6 +186,9 @@ class Info(commands.Cog):
         embed_success.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
         await ctx.send(embed = embed_success)
+
+    def cog_unload(self):
+        asyncio.run(self.session.close())
 
 def setup(bot):
     bot.add_cog(Info(bot))

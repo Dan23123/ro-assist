@@ -160,7 +160,7 @@ class Economy(commands.Cog):
         leaderboard = "```"
         count = 1
         for i in range(len(users)):
-            user = discord.utils.get(self.bot.users, id = users[i][0])
+            user = self.bot.get_user(users[i][0])
 
             if user:
                 leaderboard += f"{count}. {user} - {users[i][1]} level\n"
@@ -185,7 +185,7 @@ class Economy(commands.Cog):
         leaderboard = "```"
         count = 1
         for i in range(len(users)):
-            user = discord.utils.get(self.bot.users, id = users[i][0])
+            user = self.bot.get_user(users[i][0])
 
             if user:
                 leaderboard += f"{count}. {user} - {users[i][2]} exp\n"
@@ -198,7 +198,7 @@ class Economy(commands.Cog):
         name = "robux-leaderboard",
         description = "Shows top 10 users by robux"
     )
-    async def robuxleaderboard(self, ctx):
+    async def robux_leaderboard(self, ctx):
         users = get_top10_users("exp", 10)
 
         if len(users) == 0:
@@ -210,7 +210,7 @@ class Economy(commands.Cog):
         leaderboard = "```"
         count = 1
         for i in range(len(users)):
-            user = discord.utils.get(self.bot.users, id = users[i][0])
+            user = self.bot.get_user(users[i][0])
 
             if user:
                 leaderboard += f"{count}. {user} - {users[i][3]} robux\n"
@@ -759,7 +759,6 @@ Choose difficulty:
     @commands.is_owner()
     async def add_stat(self, ctx, target: discord.Member, stat, value):
         cursor.execute(f"UPDATE users SET {stat} = {stat} + {value} WHERE user_id = %s", (target.id,))
-        db.commit()
 
     @commands.command(
         name = "set-stat"
@@ -767,7 +766,21 @@ Choose difficulty:
     @commands.is_owner()
     async def set_stat(self, ctx, target: discord.Member, stat, value):
         cursor.execute(f"UPDATE users SET {stat} = {value} WHERE user_id = %s", (target.id,))
-        db.commit()
+
+    def cog_unload(self):
+        asyncio.run(self.session.close())
+
+    @commands.command(
+        name = "global-wipe"
+    )
+    @commands.is_owner()
+    async def global_wipe(self, ctx):
+        cursor.execute("TRUNCATE users;")
+
+        await self.bot.change_presence(
+            activity = discord.Activity(name = "global wipe!", type = discord.ActivityType.watching),
+            status = discord.Status.dnd
+        )
 
 def setup(bot):
     bot.add_cog(Economy(bot))

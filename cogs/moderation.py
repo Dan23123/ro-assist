@@ -17,7 +17,7 @@ class Moderation(commands.Cog):
             if role != None:
                 await channel.set_permissions(role, send_messages = False)
             else:
-                cursor.execute("UPDATE guilds SET muted_role_id = ? WHERE guild_id = ?", (None, channel.guild.id,))
+                cursor.execute("UPDATE guilds SET muted_role_id = %s WHERE guild_id = %s", (None, channel.guild.id,))
                 db.commit()
 
     @commands.command(
@@ -32,7 +32,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
+        if ctx.author.id != ctx.guild.owner_id and (target.id == ctx.guild.owner_id or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Kick", description = "You can't kick that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -61,7 +61,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
+        if ctx.author.id != ctx.guild.owner_id and (target.id == ctx.guild.owner_id or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Ban", description = "You can't kick ban user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -121,7 +121,7 @@ class Moderation(commands.Cog):
         description = "Server-mutes a user",
         usage = "[target] [reason (optional)]"
     )
-    @commands.has_permissions(mute_members = True)
+    @commands.has_guild_permissions(mute_members = True)
     async def mute(self, ctx, target: discord.Member, *, reason = None):
         if ctx.author == target:
             embed_failure = discord.Embed(title = "Mute", description = "You can't mute yourself. :x:", colour = discord.Colour.red())
@@ -129,7 +129,7 @@ class Moderation(commands.Cog):
 
             return await ctx.send(embed = embed_failure)
 
-        if ctx.author != ctx.guild.owner and (target == ctx.guild.owner or ctx.author.top_role <= target.top_role):
+        if ctx.author.id != ctx.guild.owner_id and (target.id == ctx.guild.owner_id or ctx.author.top_role <= target.top_role):
             embed_failure = discord.Embed(title = "Mute", description = "You can't mute that user. :x:", colour = discord.Colour.red())
             embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
@@ -144,7 +144,7 @@ class Moderation(commands.Cog):
             for channel in ctx.guild.text_channels:
                 await channel.set_permissions(role, send_messages = False)
 
-            cursor.execute("UPDATE guilds SET muted_role_id = ? WHERE guild_id = ?", (role.id, ctx.guild.id))
+            cursor.execute("UPDATE guilds SET muted_role_id = %s WHERE guild_id = %s", (role.id, ctx.guild.id))
             db.commit()
         else:
             role = ctx.guild.get_role(guild[5])

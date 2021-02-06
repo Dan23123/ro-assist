@@ -150,5 +150,8 @@ class Fun(commands.Cog):
 
         await ctx.send(embed = embed_success)
 
+    def cog_unload(self):
+        asyncio.run(self.session.close())
+
 def setup(bot):
     bot.add_cog(Fun(bot))

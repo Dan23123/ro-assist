@@ -1,6 +1,5 @@
 import discord
 import time
-import aiohttp
 
 from discord.ext import commands, tasks
 from converters import TimeConverter
@@ -42,9 +41,9 @@ class Giveaways(commands.Cog):
         except commands.ChannelNotFound:
             return await ctx.send("Invalid channel. :x:")
 
-        await ctx.send("Alright, let's get started. What do you want to giveaway?")
+        await ctx.send("What do you want to giveaway?")
         msg2 = await self.bot.wait_for("message", timeout = 30.0, check = check)
-        reward = msg1.content
+        reward = msg2.content
 
         await ctx.send("How many winners?")
         msg3 = await self.bot.wait_for("message", timeout = 30.0, check = check)

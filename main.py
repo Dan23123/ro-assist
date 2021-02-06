@@ -30,7 +30,10 @@ client = commands.Bot(
 @client.event
 async def on_ready():
     for cog in COGS_LIST:
-        client.load_extension(cog)
+        try:
+            client.load_extension(cog)
+        except Exception as ex:
+            print(f"[LOG] Failed to load {cog} cog. Exception: {ex}");
 
     print("[CLIENT] Bot is ready.")
     print(f"[CLIENT] Using discord.py {discord.__version__}.")
