@@ -9,196 +9,198 @@ from random import randint
 WORDS = ["and", "or", "hi", "cheese", "apple", "roblox", "bye", "orange", "banana", "nice"]
 
 class Roblox(commands.Cog):
-	def __init__(self, bot):
-		self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
+        self.session = aiohttp.ClientSession()
 
-	@commands.Cog.listener()
-	async def on_guild_channel_delete(self, channel):
-		guild = get_guild(channel.guild.id)
-		if channel.id == guild[2]:
-			cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (None, None, None, channel.guild.id))
-			db.commit()
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        guild = get_guild(channel.guild.id)
 
-	@commands.command(
-		name = "roblox-user",
-		description = "Get specific ROBLOX user's information",
-		usage = "[username]"
-	)
-	async def robloxuser(self, ctx, username):
-		embed = discord.Embed(title = "ROBLOX User", description = "Collecting data...", colour = discord.Colour.gold())
-		embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
-		await ctx.send(embed = embed)
+        if channel.id == guild[2]:
+            cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (None, None, None, channel.guild.id))
+            db.commit()
 
-		user = await self.get_user_by_username(username)
-		if user != None:
-			embed_user_data = discord.Embed(title = username, colour = discord.Colour.green())
-			embed_user_data.set_thumbnail(url = user["AvatarUrl"])
+    @commands.command(
+        name = "roblox-user",
+        description = "Get specific ROBLOX user's information",
+        usage = "[username]"
+    )
+    async def robloxuser(self, ctx, username):
+        embed = discord.Embed(title = "ROBLOX User", description = "Collecting data...", colour = discord.Colour.gold())
+        embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+        await ctx.send(embed = embed)
 
-			embed_user_data.add_field(name = "Username", value = user["Username"])
-			embed_user_data.add_field(name = "User ID", value = user["Id"])
-			embed_user_data.add_field(name = "Is online", value = ("Yes" if user["IsOnline"] else "No"))
-			embed_user_data.add_field(name = "Friends", value = user["FriendshipCount"])
-			embed_user_data.add_field(name = "Followers", value = user["FollowersCount"])
-			embed_user_data.add_field(name = "Followings", value = user["FollowingsCount"])
-			embed_user_data.add_field(name = "Groups", value = user["GroupsCount"])
+        user = await self.get_user_by_username(username)
 
-			await ctx.send(embed = embed_user_data)
-		else:
-			embed = discord.Embed(title = "Get specific user's ROBLOX information", description = "User not found. :x:", colour = discord.Colour.red())
-			embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+        if user == None:
+            embed = discord.Embed(title = "Get specific user's ROBLOX information", description = "User not found. :x:", colour = discord.Colour.red())
+            embed.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-			await ctx.send(embed = embed)
+            return await ctx.send(embed = embed)
 
-	@commands.command(
-		name = "setup-verify",
-		description = "Set up ROBLOX verification system for your server"
-	)
-	@commands.has_permissions(manage_channels = True, manage_roles = True, manage_nicknames = True)
-	async def setupverify(self, ctx):
-		check = lambda message: message.channel == ctx.channel and message.author == ctx.author
+        embed_user_data = discord.Embed(title = username, colour = discord.Colour.green())
+        embed_user_data.set_thumbnail(url = user["AvatarUrl"])
 
-		await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 1: choose which role you want to give after completing verification (you can skip this step by saying \"skip\").\n(30 seconds to answer)", colour = discord.Colour.blurple()))
-		msg1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
-		verification_role = None
+        embed_user_data.add_field(name = "Username", value = user["Username"])
+        embed_user_data.add_field(name = "User ID", value = user["Id"])
+        embed_user_data.add_field(name = "Is online", value = ("Yes" if user["IsOnline"] else "No"))
+        embed_user_data.add_field(name = "Friends", value = user["FriendshipCount"])
+        embed_user_data.add_field(name = "Followers", value = user["FollowersCount"])
+        embed_user_data.add_field(name = "Followings", value = user["FollowingsCount"])
+        embed_user_data.add_field(name = "Groups", value = user["GroupsCount"])
 
-		if msg1.content != "skip":
-			try:
-				role = await commands.RoleConverter().convert(ctx, msg1.content)
-				verification_role = role.id
-			except:
-				return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid role. :x:", colour = discord.Colour.red()))
+        await ctx.send(embed = embed_user_data)
 
-		msg2 = await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 2: do you want to set user's nickname as their roblox username?\n(30 seconds to answer)", colour = discord.Colour.blurple()))
-		await msg2.add_reaction("☑️")
-		await msg2.add_reaction("❌")
+    @commands.command(
+        name = "setup-verify",
+        description = "Set up ROBLOX verification system for your server"
+    )
+    @commands.has_permissions(manage_channels = True, manage_roles = True, manage_nicknames = True)
+    async def setupverify(self, ctx):
+        check = lambda message: message.channel == ctx.channel and message.author == ctx.author
 
-		reaction, user = await self.bot.wait_for("reaction_add", timeout = 30.0, check = lambda reaction, user: reaction.message.id == msg2.id and user.id == ctx.author.id)
-		verification_set_username = None
+        await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 1: choose which role you want to give after completing verification (you can skip this step by saying \"skip\").\n(30 seconds to answer)", colour = discord.Colour.blurple()))
+        msg1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
+        verification_role = None
 
-		if reaction.emoji == "☑️":
-			verification_set_username = True
-		elif reaction.emoji == "❌":
-			verification_set_username = False
-		else:
-			return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid answer. :x:", colour = discord.Colour.red()))
+        if msg1.content != "skip":
+            try:
+                role = await commands.RoleConverter().convert(ctx, msg1.content)
+                verification_role = role.id
+            except:
+                return await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Failed to set up verification: invalid role. :x:", colour = discord.Colour.red()))
 
-		cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (ctx.channel.id, verification_role, verification_set_username, ctx.guild.id,))
-		db.commit()
+        msg2 = await ctx.send(embed = discord.Embed(title = "Verification Setup", description = "Step 2: do you want to set user's nickname as their roblox username?\n(30 seconds to answer)", colour = discord.Colour.blurple()))
+        await msg2.add_reaction("☑️")
+        await msg2.add_reaction("❌")
 
-		await ctx.send(embed = discord.Embed(title = "Verification Setup", description = f"Set up verification for {ctx.channel.mention} channel. :white_check_mark:", colour = discord.Colour.green()))
+        reaction, user = await self.bot.wait_for("reaction_add", timeout = 30.0, check = lambda reaction, user: reaction.message.id == msg2.id and user.id == ctx.author.id and reaction.emoji in "☑️❌")
+        verification_set_username = None
 
-	@commands.command(
-		description = "Complete verification using this command"
-	)
-	async def verify(self, ctx):
-		guild = get_guild(ctx.guild.id)
+        if reaction.emoji == "☑️":
+            verification_set_username = True
+        else:
+            verification_set_username = False
 
-		if ctx.channel.id == guild[2]:
-			check = lambda message: message.channel == ctx.channel and message.author == ctx.author
+        cursor.execute("UPDATE guilds SET verification_channel_id = %s, verification_role_id = %s, verification_set_username = %s WHERE guild_id = %s", (ctx.channel.id, verification_role, verification_set_username, ctx.guild.id,))
+        db.commit()
 
-			embed_step1 = discord.Embed(title = "Verification", description = "Step 1: tell your ROBLOX username.\n(30 seconds to answer)", colour = discord.Colour.blurple())
-			embed_step1.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
-		
-			await ctx.send(embed = embed_step1)
-			message1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
-			user = await self.get_user_by_username(message1.content)
+        await ctx.send(embed = discord.Embed(title = "Verification Setup", description = f"Set up verification for {ctx.channel.mention} channel. :white_check_mark:", colour = discord.Colour.green()))
 
-			if user == None:
-				embed_failure = discord.Embed(title = "Verification", description = "Failed to verify: invalid user. :x:", colour = discord.Colour.red())
-				embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+    @commands.command(
+        description = "Complete verification using this command"
+    )
+    async def verify(self, ctx):
+        guild = get_guild(ctx.guild.id)
 
-				return await ctx.send(embed = embed_failure)
+        if ctx.channel.id == guild[2]:
+            check = lambda message: message.channel == ctx.channel and message.author == ctx.author
 
-			status = self.generate_status()
-			embed_step2 = discord.Embed(title = "Verification", description = f"Step 2: set your \"About\" section to \"{status}\". After this say \"verify-end\".\n(3 minutes to answer)", colour = discord.Colour.blurple())
-			embed_step2.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+            embed_step1 = discord.Embed(title = "Verification", description = "Step 1: tell your ROBLOX username.\n(30 seconds to answer)", colour = discord.Colour.blurple())
+            embed_step1.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+        
+            await ctx.send(embed = embed_step1)
+            message1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
+            user = await self.get_user_by_username(message1.content)
 
-			await ctx.send(embed = embed_step2)
-			await self.bot.wait_for("message", timeout = 180.0, check = lambda message: message.channel == ctx.channel and message.author == ctx.author and message.content == "verify-end")
+            if user == None:
+                embed_failure = discord.Embed(title = "Verification", description = "Failed to verify: invalid user. :x:", colour = discord.Colour.red())
+                embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-			embed_check = discord.Embed(title = "", description = "Checking \"About\" section...", colour = discord.Colour.gold())
-			embed_check.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+                return await ctx.send(embed = embed_failure)
 
-			await ctx.send(embed = embed_check)
+            status = self.generate_status()
+            embed_step2 = discord.Embed(title = "Verification", description = f"Step 2: set your \"About\" section to \"{status}\". After this say \"verify-end\".\n(3 minutes to answer)", colour = discord.Colour.blurple())
+            embed_step2.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-			async with aiohttp.ClientSession() as session:
-				async with session.get(f"https://www.roblox.com/users/{user['Id']}/profile") as r:
-					text = await r.text()
-					soup = BeautifulSoup(text, "html.parser")
-					status_object = soup.find("span", class_="profile-about-content-text linkify")
+            await ctx.send(embed = embed_step2)
+            await self.bot.wait_for("message", timeout = 180.0, check = lambda message: message.channel == ctx.channel and message.author == ctx.author and message.content == "verify-end")
 
-					if status_object == None or status_object.text != status:
-						embed_failure = discord.Embed(title = "Verification", description = "Failed to verify: invalid \"About\" section. :x:", colour = discord.Colour.red())
-						embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+            embed_check = discord.Embed(title = "", description = "Checking \"About\" section...", colour = discord.Colour.gold())
+            embed_check.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-						return await ctx.send(embed = embed_failure)
+            await ctx.send(embed = embed_check)
 
-					if guild[3] != None:
-						role = discord.utils.get(ctx.guild.roles, id = guild[3])
-						if role != None:
-							await ctx.author.add_roles(role)
-						else:
-							cursor.execute("UPDATE guilds SET verification_role_id = %s WHERE guild_id = %s", (None, ctx.guild.id))
-							db.commit()
+            async with self.session.get(f"https://www.roblox.com/users/{user['Id']}/profile") as r:
+                text = await r.text()
+                soup = BeautifulSoup(text, "html.parser")
+                status_object = soup.find("span", class_="profile-about-content-text linkify")
 
-					if guild[4] == 1:
-						try:
-							await ctx.author.edit(nick = user["Username"])
-						except:
-							pass
+                if status_object == None or status_object.text != status:
+                    embed_failure = discord.Embed(title = "Verification", description = "Failed to verify: invalid \"About\" section. :x:", colour = discord.Colour.red())
+                    embed_failure.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-					cursor.execute("UPDATE users SET roblox_id = %s WHERE user_id = %s", (user["Id"], ctx.author.id))
-					db.commit()
+                    return await ctx.send(embed = embed_failure)
 
-					embed_success = discord.Embed(title = "Verification", description = "Verification completed. :white_check_mark:", colour = discord.Colour.green())
-					embed_success.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
+                if guild[3] != None:
+                    role = discord.utils.get(ctx.guild.roles, id = guild[3])
 
-					await ctx.send(embed = embed_success)
+                    if role != None:
+                        await ctx.author.add_roles(role)
+                    else:
+                        cursor.execute("UPDATE guilds SET verification_role_id = %s WHERE guild_id = %s", (None, ctx.guild.id))
+                        db.commit()
 
-	def generate_status(self):
-		words = []
+                if guild[4] == 1:
+                    try:
+                        await ctx.author.edit(nick = user["Username"])
+                    except:
+                        pass
 
-		for i in range(12):
-			words.append(WORDS[randint(0, len(WORDS) - 1)])
+                cursor.execute("UPDATE users SET roblox_id = %s WHERE user_id = %s", (user["Id"], ctx.author.id))
+                db.commit()
 
-		return " ".join(words)
+                embed_success = discord.Embed(title = "Verification", description = "Verification completed. :white_check_mark:", colour = discord.Colour.green())
+                embed_success.set_author(name = ctx.author, icon_url = str(ctx.author.avatar_url))
 
-	async def get_user(self, user_id):
-		async with aiohttp.ClientSession() as session:
-			async with session.get(f"https://api.roblox.com/users/{user_id}") as r:
-				result = await r.json()
-				nickname = result["Nickname"]
-				return await self.get_user_by_username(nickname)
+                await ctx.send(embed = embed_success)
 
-	async def get_user_by_username(self, username):
-		async with aiohttp.ClientSession() as session:
-			async with session.get(f"https://api.roblox.com/users/get-by-username?username={username}") as r:
-				result = await r.json()
-				if "Id" in result:
-					async with session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/friends/count") as r:
-						data = await r.json()
-						result["FriendshipCount"] = data["count"]
+    def generate_status(self):
+        words = []
 
-					async with session.get(f"https://api.roblox.com/users/{result['Id']}/groups") as r:
-						data = await r.json()
-						result["GroupsCount"] = len(data)
+        for i in range(12):
+            words.append(WORDS[randint(0, len(WORDS) - 1)])
 
-					async with session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/followers/count") as r:
-						data = await r.json()
-						result["FollowersCount"] = data["count"]
+        return " ".join(words)
 
-					async with session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/followings/count") as r:
-						data = await r.json()
-						result["FollowingsCount"] = data["count"]
+    async def get_user(self, user_id):
+        async with self.session.get(f"https://api.roblox.com/users/{user_id}") as r:
+            result = await r.json()
+            nickname = result["Nickname"]
+            return await self.get_user_by_username(nickname)
 
-					async with session.get(f"https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&userId={result['Id']}") as r:
-						result["AvatarUrl"] = r.url.human_repr()
+    async def get_user_by_username(self, username):
+        async with self.session.get(f"https://api.roblox.com/users/get-by-username?username={username}") as r:
+            result = await r.json()
 
-					async with session.get(f"https://groups.roblox.com/v2/users/{result['Id']}/groups/roles") as r:
-						data = await r.json()
-						result["Groups"] = data["data"]
+            if not ("Id" in result):
+                return
 
-					return result
+            async with self.session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/friends/count") as r:
+                data = await r.json()
+                result["FriendshipCount"] = data["count"]
+
+            async with self.session.get(f"https://api.roblox.com/users/{result['Id']}/groups") as r:
+                data = await r.json()
+                result["GroupsCount"] = len(data)
+
+            async with self.session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/followers/count") as r:
+                data = await r.json()
+                result["FollowersCount"] = data["count"]
+
+            async with self.session.get(f"https://friends.roblox.com/v1/users/{result['Id']}/followings/count") as r:
+                data = await r.json()
+                result["FollowingsCount"] = data["count"]
+
+            async with self.session.get(f"https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&userId={result['Id']}") as r:
+                result["AvatarUrl"] = r.url.human_repr()
+
+            async with self.session.get(f"https://groups.roblox.com/v2/users/{result['Id']}/groups/roles") as r:
+                data = await r.json()
+                result["Groups"] = data["data"]
+
+            return result
 
 def setup(bot):
-	bot.add_cog(Roblox(bot))
+    bot.add_cog(Roblox(bot))
