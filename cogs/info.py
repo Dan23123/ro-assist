@@ -105,8 +105,7 @@ class Info(commands.Cog):
                 return await ctx.send(embed = embed_failure)
 
             cmds = cog.get_commands()
-            ln = len(cmds)
-            pages = ceil(ln / COMMANDS_PER_PAGE)
+            pages = ceil(len(cmds) / COMMANDS_PER_PAGE)
 
             if page < 1 or page > pages:
                 embed_failure = discord.Embed(title = "Help", description = "Invalid page. :x:", colour = discord.Colour.red())

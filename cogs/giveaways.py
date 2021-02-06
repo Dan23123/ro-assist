@@ -38,7 +38,7 @@ class Giveaways(commands.Cog):
         msg1 = await self.bot.wait_for("message", timeout = 30.0, check = check)
 
         try:
-            channel = await commands.TextChannelConverter().convert(ctx, msg1.content)
+            targetChannel = await commands.TextChannelConverter().convert(ctx, msg1.content)
         except commands.ChannelNotFound:
             return await ctx.send("Invalid channel. :x:")
 
@@ -114,7 +114,7 @@ class Giveaways(commands.Cog):
         giveaway_message = await ctx.send("React with :tada: to enter the giveaway.", embed = embed_giveaway)
         await giveaway_message.add_reaction("🎉")
 
-        add_giveaway(ctx.guild.id, ctx.channel.id, giveaway_message.id, reward, winners, db_requirements, giveaway_time)
+        add_giveaway(ctx.guild.id, targetChannel.id, giveaway_message.id, reward, winners, db_requirements, giveaway_time)
 
     @commands.command(
         name = "start-giveaway-short",
@@ -191,6 +191,7 @@ Ends **{time_string}**
     @commands.has_permissions(manage_channels = True, manage_messages = True)
     async def end_giveaway(self, ctx, message_id):
         giveaway = get_giveaway(ctx.guild.id, ctx.channel.id, message_id)
+
         try:
             message = await ctx.channel.fetch_message(message_id)
         except (discord.NotFound, discord.Forbidden):
@@ -245,8 +246,7 @@ Ends **{time_string}**
     @commands.has_permissions(manage_channels = True, manage_messages = True)
     async def giveaway_list(self, ctx, page: int = 1):
         giveaways = get_guild_giveaways(ctx.guild.id)
-        ln = len(giveaways)
-        pages = ceil(ln / GIVEAWAYS_PER_PAGE)
+        pages = ceil(len(giveaways) / GIVEAWAYS_PER_PAGE)
 
         if page < 1 or page > pages:
             embed_failure = discord.Embed(title = "Giveaway List", description = "Invalid page. :x:", colour = discord.Colour.red())
@@ -254,8 +254,8 @@ Ends **{time_string}**
 
             return await ctx.send(embed = embed_failure)
 
-        r1 = (GIVEAWAYS_PER_PAGE * (page - 1))
-        r2 = ((GIVEAWAYS_PER_PAGE * page) if (GIVEAWAYS_PER_PAGE * page) <= ln else ln)
+        r1 = (page - 1) * GIVEAWAYS_PER_PAGE
+        r2 = page * GIVEAWAYS_PER_PAGE
 
         embed_giveaway_list = discord.Embed(title = "Giveaway List", description = "", colour = discord.Colour.blurple())
         embed_giveaway_list.set_footer(text = f"Page: {page} / {pages}")
@@ -263,12 +263,15 @@ Ends **{time_string}**
         count = 1
         for i in range(r1, r2):
             channel = ctx.guild.get_channel(giveaways[i][1])
-            if channel == None: continue
+            if channel == None:
+                continue
+
             try:
                 message = await channel.fetch_message(giveaways[i][2])
             except (discord.NotFound, discord.Forbidden):
                 delete_giveaway(giveaways[i][0], giveaways[i][1], giveaways[i][2])
                 continue
+
             embed_giveaway_list.description += f"**{count}.** {message.jump_url}\n\n"
             count += 1
 

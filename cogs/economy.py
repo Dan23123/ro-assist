@@ -495,8 +495,7 @@ Choose difficulty:
     async def shop(self, ctx, page: int = 1):
         embed_shop = discord.Embed(title = "Shop", colour = discord.Colour.green())
 
-        ln = len(SHOP_ITEMS)
-        pages = ceil(ln / SHOP_ITEMS_PER_PAGE)
+        pages = ceil(len(SHOP_ITEMS) / SHOP_ITEMS_PER_PAGE)
 
         if page < 1 or page > pages:
             embed_failure = discord.Embed(title = "Shop", description = "Invalid page. :x:", colour = discord.Colour.red())
@@ -631,9 +630,7 @@ Choose difficulty:
             embed_inventory.description = "Your inventory is empty :("
             return await ctx.send(embed = embed_inventory)
 
-        ln = len(inventory_count)
-        pages = ceil(ln / INVENTORY_ITEMS_PER_PAGE)
-
+        pages = ceil(len(inventory_count) / INVENTORY_ITEMS_PER_PAGE)
         embed_inventory.set_footer(text = f"Page: {page} / {pages}")
 
         if page < 1 or page > pages:
