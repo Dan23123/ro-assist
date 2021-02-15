@@ -3,6 +3,7 @@ import aiohttp
 import html
 import time
 import json
+import asyncio
 
 from discord.ext import commands, tasks
 from database import db, cursor, get_guild, get_user, get_all_users, get_top10_users
