@@ -24,7 +24,7 @@ class Moderation(commands.Cog):
         description = "Kicks specific member",
         usage = "[target] [reason (optional)]"
     )
-    @commands.has_permissions(kick_members = True)
+    @commands.has_guild_permissions(kick_members = True)
     async def kick(self, ctx, target: discord.Member, *, reason = None):
         if ctx.author == target:
             embed_failure = discord.Embed(title = "Kick", description = "You can't kick yourself. :x:", colour = discord.Colour.red())
@@ -53,7 +53,7 @@ class Moderation(commands.Cog):
         description = "Bans specific member",
         usage = "[target] [reason (optional)]"
     )
-    @commands.has_permissions(ban_members = True)
+    @commands.has_guild_permissions(ban_members = True)
     async def ban(self, ctx, target: discord.Member, *, reason = None):
         if ctx.author == target:
             embed_failure = discord.Embed(title = "Ban", description = "You can't ban yourself. :x:", colour = discord.Colour.red())
@@ -82,7 +82,7 @@ class Moderation(commands.Cog):
         description = "Unbans a user from the server",
         usage = "[target_id] [reason (optional)]"
     )
-    @commands.has_permissions(ban_members = True)
+    @commands.has_guild_permissions(ban_members = True)
     async def unban(self, ctx, user_id: int, *, reason = None):
         ban_entries = await ctx.guild.bans()
 
@@ -110,7 +110,7 @@ class Moderation(commands.Cog):
         description = "Delete a channel's messages",
         usage = "[limit (default = 1)]"
     )
-    @commands.has_permissions(manage_channels = True)
+    @commands.has_guild_permissions(manage_channels = True)
     async def clear(self, ctx, limit = 1):
         await ctx.message.delete()
 
@@ -170,7 +170,7 @@ class Moderation(commands.Cog):
         description = "Unmutes a user",
         usage = "[target] [reason (optional)]"
     )
-    @commands.has_permissions(mute_members = True)
+    @commands.has_guild_permissions(mute_members = True)
     async def unmute(self, ctx, target: discord.Member, *, reason = None):
         guild = get_guild(ctx.guild.id)
 
@@ -225,7 +225,7 @@ class Moderation(commands.Cog):
     @commands.command(
         description = "Nukes channel"
     )
-    @commands.has_permissions(manage_channels = True)
+    @commands.has_guild_permissions(manage_channels = True)
     async def nuke(self, ctx):
         name = ctx.channel.name
         overwrites = ctx.channel.overwrites
