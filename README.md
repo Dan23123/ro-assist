@@ -1,4 +1,3 @@
 # RoAssist
-RoAssist - Discord Bot with leveling, moderation, giveaways, roblox help and fun.
-
-This bot was created when I was learning Python and discord.py, so you can notice a lot of trash code. Have fun using it btw.
+RoAssist - Discord Bot with leveling, moderation, giveaways, roblox help and fun commands.
+The bot was created when I was learning Python and discord.py. So don't except any good code here.
